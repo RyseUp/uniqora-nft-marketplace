@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package api.user.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+service UserAccountAPI {
+  rpc UserSignup (UserSignupRequest) returns (UserSignupResponse) {}
+  rpc UserCompleteSignup (UserCompleteSignupRequest) returns (UserCompleteSignupResponse) {}
+}
+
+message UserSignupRequest {
+  string username = 1 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 255
+  }];
+  string email = 2 [(buf.validate.field).string = {
+    email: true
+    min_len: 1
+    max_len: 255
+  }];
+  string password = 3 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 255
+  }];
+}
+
+message UserSignupResponse {
+  string pending_user_name = 1;
+  google.protobuf.Timestamp expired_at = 2;
+}
+
+message UserCompleteSignupRequest{
+  string email = 1 [(buf.validate.field).string = {
+    email: true
+    min_len: 1
+    max_len: 255
+  }];
+  string verification_code = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 255
+  }];
+}
+
+message UserCompleteSignupResponse {
+  string message = 1;
+}

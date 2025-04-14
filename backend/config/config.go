@@ -50,8 +50,8 @@ func Load() *Config {
 		log.Fatalf("config unmarshal: %v", err)
 	}
 
-	if cfg.PostgresSQL == "" {
-		cfg.PostgresSQL = os.Getenv("POSTGRES_DB")
+	if envPwd := os.Getenv("EMAIL_PASSWORD"); envPwd != "" {
+		cfg.Email.Password = envPwd
 	}
 	return &cfg
 }

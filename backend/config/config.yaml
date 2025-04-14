@@ -4,7 +4,7 @@ email:
   host: "smtp.gmail.com"
   port: 587
   from: "nhminh04062001@gmail.com"
-  password: "APP_PASSWORD_HERE"
+  password: "${EMAIL_PASSWORD}"
 
 rabbitmq:
   url: "amqp://guest:guest@localhost:5672/"

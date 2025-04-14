@@ -5,7 +5,9 @@ go 1.23.4
 require (
 	buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go v1.36.6-20250307204501-0409229c3780.1
 	github.com/bufbuild/connect-go v1.10.0
+	github.com/google/uuid v1.6.0
 	github.com/joho/godotenv v1.5.1
+	github.com/rabbitmq/amqp091-go v1.10.0
 	github.com/spf13/viper v1.20.1
 	golang.org/x/crypto v0.32.0
 	google.golang.org/grpc v1.71.1
