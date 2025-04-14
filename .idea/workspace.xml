@@ -5,34 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="set up code folder structure">
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/messages.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/service.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/template/account_created.tmpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/template/manager.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/template/notification.tmpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/template/password_reset.tmpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/template/verification.tmpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/template/welcome.tmpl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/email_center/types/email_type.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/models/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/models/user_register.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/mq/email.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/mq/publisher.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/repositories/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/repositories/user_register.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/services/user.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/internal/worker/email_consumer.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config/config.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/services/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/services/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +66,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "feat/user-sign-up-local",
+    "git-widget-placeholder": "feat/user-resend-sign-up",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace/backend",
@@ -127,6 +105,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd" />
+        <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd" />
       </list>
     </recent_temporary>
   </component>
@@ -153,24 +132,14 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/backend/internal/email_center/template/manager.go</url>
-          <line>73</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
-          <line>126</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
           <line>57</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
-          <line>94</line>
-          <option name="timeStamp" value="11" />
+          <line>192</line>
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

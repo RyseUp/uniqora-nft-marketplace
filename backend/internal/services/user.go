@@ -147,7 +147,7 @@ func (s *UserAPI) UserCompleteSignup(ctx context.Context, c *connect.Request[v1.
 	}
 
 	if userRegister.Status == models.UserRegisterStatusCompleted {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("email_center has been used in this system"))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("email has been used in this system"))
 	}
 
 	currentTime := time.Now()
@@ -187,5 +187,38 @@ func (s *UserAPI) UserCompleteSignup(ctx context.Context, c *connect.Request[v1.
 
 	return connect.NewResponse(&v1.UserCompleteSignupResponse{
 		Message: "completed sign up",
+	}), nil
+}
+
+func (s *UserAPI) UserResendSignup(ctx context.Context, c *connect.Request[v1.UserResendSignupRequest]) (*connect.Response[v1.UserResendSignupResponse], error) {
+	var (
+		req   = c.Msg
+		email = req.GetEmail()
+	)
+
+	currentTime := time.Now()
+	userRegis, err := s.userRepo.GetLastUserRegisterByEmail(ctx, email)
+	switch {
+	case errors.Is(err, gorm.ErrRecordNotFound):
+		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("user didn't have any previous registrations"))
+	case err != nil:
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get last user register email_center: %w", err))
+	default:
+		if currentTime.After(userRegis.ExpiredAt) {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("you are limited to a certain number of requests"))
+		}
+		if userRegis.Status == models.UserRegisterStatusCompleted {
+			return nil, connect.NewError(connect.CodeAlreadyExists, fmt.Errorf("email has been used in this system"))
+		}
+	}
+
+	_, err = s.createUserRegister(ctx, userRegis.UserName, email, userRegis.Password)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create new user register: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserResendSignupResponse{
+		Message:   "complete-resend-sign-up",
+		ExpiredAt: timestamppb.New(time.Now().Add(24 * time.Hour)),
 	}), nil
 }
