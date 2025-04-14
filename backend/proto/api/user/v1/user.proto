@@ -7,6 +7,7 @@ import "google/protobuf/timestamp.proto";
 
 service UserAccountAPI {
   rpc UserSignup (UserSignupRequest) returns (UserSignupResponse) {}
+  rpc UserResendSignup (UserResendSignupRequest) returns (UserResendSignupResponse) {}
   rpc UserCompleteSignup (UserCompleteSignupRequest) returns (UserCompleteSignupResponse) {}
 }
 
@@ -28,6 +29,19 @@ message UserSignupRequest {
 
 message UserSignupResponse {
   string pending_user_name = 1;
+  google.protobuf.Timestamp expired_at = 2;
+}
+
+message UserResendSignupRequest {
+  string email = 3 [(buf.validate.field).string = {
+    email: true
+    min_len: 1
+    max_len: 255
+  }];
+}
+
+message UserResendSignupResponse {
+  string message = 1;
   google.protobuf.Timestamp expired_at = 2;
 }
 

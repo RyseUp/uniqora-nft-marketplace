@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	UserAccountAPI_UserSignup_FullMethodName         = "/api.user.v1.UserAccountAPI/UserSignup"
+	UserAccountAPI_UserResendSignup_FullMethodName   = "/api.user.v1.UserAccountAPI/UserResendSignup"
 	UserAccountAPI_UserCompleteSignup_FullMethodName = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
 )
 
@@ -28,6 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserAccountAPIClient interface {
 	UserSignup(ctx context.Context, in *UserSignupRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
+	UserResendSignup(ctx context.Context, in *UserResendSignupRequest, opts ...grpc.CallOption) (*UserResendSignupResponse, error)
 	UserCompleteSignup(ctx context.Context, in *UserCompleteSignupRequest, opts ...grpc.CallOption) (*UserCompleteSignupResponse, error)
 }
 
@@ -49,6 +51,16 @@ func (c *userAccountAPIClient) UserSignup(ctx context.Context, in *UserSignupReq
 	return out, nil
 }
 
+func (c *userAccountAPIClient) UserResendSignup(ctx context.Context, in *UserResendSignupRequest, opts ...grpc.CallOption) (*UserResendSignupResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserResendSignupResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserResendSignup_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userAccountAPIClient) UserCompleteSignup(ctx context.Context, in *UserCompleteSignupRequest, opts ...grpc.CallOption) (*UserCompleteSignupResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UserCompleteSignupResponse)
@@ -64,6 +76,7 @@ func (c *userAccountAPIClient) UserCompleteSignup(ctx context.Context, in *UserC
 // for forward compatibility.
 type UserAccountAPIServer interface {
 	UserSignup(context.Context, *UserSignupRequest) (*UserSignupResponse, error)
+	UserResendSignup(context.Context, *UserResendSignupRequest) (*UserResendSignupResponse, error)
 	UserCompleteSignup(context.Context, *UserCompleteSignupRequest) (*UserCompleteSignupResponse, error)
 	mustEmbedUnimplementedUserAccountAPIServer()
 }
@@ -77,6 +90,9 @@ type UnimplementedUserAccountAPIServer struct{}
 
 func (UnimplementedUserAccountAPIServer) UserSignup(context.Context, *UserSignupRequest) (*UserSignupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserSignup not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserResendSignup(context.Context, *UserResendSignupRequest) (*UserResendSignupResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserResendSignup not implemented")
 }
 func (UnimplementedUserAccountAPIServer) UserCompleteSignup(context.Context, *UserCompleteSignupRequest) (*UserCompleteSignupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCompleteSignup not implemented")
@@ -120,6 +136,24 @@ func _UserAccountAPI_UserSignup_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAccountAPI_UserResendSignup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserResendSignupRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserResendSignup(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserResendSignup_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserResendSignup(ctx, req.(*UserResendSignupRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserAccountAPI_UserCompleteSignup_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserCompleteSignupRequest)
 	if err := dec(in); err != nil {
@@ -148,6 +182,10 @@ var UserAccountAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserSignup",
 			Handler:    _UserAccountAPI_UserSignup_Handler,
+		},
+		{
+			MethodName: "UserResendSignup",
+			Handler:    _UserAccountAPI_UserResendSignup_Handler,
 		},
 		{
 			MethodName: "UserCompleteSignup",
