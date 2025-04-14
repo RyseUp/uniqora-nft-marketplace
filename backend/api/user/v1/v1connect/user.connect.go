@@ -36,11 +36,15 @@ const (
 	// UserAccountAPIUserSignupProcedure is the fully-qualified name of the UserAccountAPI's UserSignup
 	// RPC.
 	UserAccountAPIUserSignupProcedure = "/api.user.v1.UserAccountAPI/UserSignup"
+	// UserAccountAPIUserCompleteSignupProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserCompleteSignup RPC.
+	UserAccountAPIUserCompleteSignupProcedure = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
 type UserAccountAPIClient interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
+	UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -58,12 +62,18 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			baseURL+UserAccountAPIUserSignupProcedure,
 			opts...,
 		),
+		userCompleteSignup: connect_go.NewClient[v1.UserCompleteSignupRequest, v1.UserCompleteSignupResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserCompleteSignupProcedure,
+			opts...,
+		),
 	}
 }
 
 // userAccountAPIClient implements UserAccountAPIClient.
 type userAccountAPIClient struct {
-	userSignup *connect_go.Client[v1.UserSignupRequest, v1.UserSignupResponse]
+	userSignup         *connect_go.Client[v1.UserSignupRequest, v1.UserSignupResponse]
+	userCompleteSignup *connect_go.Client[v1.UserCompleteSignupRequest, v1.UserCompleteSignupResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -71,9 +81,15 @@ func (c *userAccountAPIClient) UserSignup(ctx context.Context, req *connect_go.R
 	return c.userSignup.CallUnary(ctx, req)
 }
 
+// UserCompleteSignup calls api.user.v1.UserAccountAPI.UserCompleteSignup.
+func (c *userAccountAPIClient) UserCompleteSignup(ctx context.Context, req *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error) {
+	return c.userCompleteSignup.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
+	UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -87,10 +103,17 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		svc.UserSignup,
 		opts...,
 	)
+	userAccountAPIUserCompleteSignupHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserCompleteSignupProcedure,
+		svc.UserCompleteSignup,
+		opts...,
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
 			userAccountAPIUserSignupHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserCompleteSignupProcedure:
+			userAccountAPIUserCompleteSignupHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -102,4 +125,8 @@ type UnimplementedUserAccountAPIHandler struct{}
 
 func (UnimplementedUserAccountAPIHandler) UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserSignup is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserCompleteSignup is not implemented"))
 }
