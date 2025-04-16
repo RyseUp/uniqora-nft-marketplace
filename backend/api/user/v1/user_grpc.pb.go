@@ -22,6 +22,7 @@ const (
 	UserAccountAPI_UserSignup_FullMethodName         = "/api.user.v1.UserAccountAPI/UserSignup"
 	UserAccountAPI_UserResendSignup_FullMethodName   = "/api.user.v1.UserAccountAPI/UserResendSignup"
 	UserAccountAPI_UserCompleteSignup_FullMethodName = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
+	UserAccountAPI_UserLogin_FullMethodName          = "/api.user.v1.UserAccountAPI/UserLogin"
 )
 
 // UserAccountAPIClient is the client API for UserAccountAPI service.
@@ -31,6 +32,7 @@ type UserAccountAPIClient interface {
 	UserSignup(ctx context.Context, in *UserSignupRequest, opts ...grpc.CallOption) (*UserSignupResponse, error)
 	UserResendSignup(ctx context.Context, in *UserResendSignupRequest, opts ...grpc.CallOption) (*UserResendSignupResponse, error)
 	UserCompleteSignup(ctx context.Context, in *UserCompleteSignupRequest, opts ...grpc.CallOption) (*UserCompleteSignupResponse, error)
+	UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 }
 
 type userAccountAPIClient struct {
@@ -71,6 +73,16 @@ func (c *userAccountAPIClient) UserCompleteSignup(ctx context.Context, in *UserC
 	return out, nil
 }
 
+func (c *userAccountAPIClient) UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserLoginResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserLogin_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAccountAPIServer is the server API for UserAccountAPI service.
 // All implementations must embed UnimplementedUserAccountAPIServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type UserAccountAPIServer interface {
 	UserSignup(context.Context, *UserSignupRequest) (*UserSignupResponse, error)
 	UserResendSignup(context.Context, *UserResendSignupRequest) (*UserResendSignupResponse, error)
 	UserCompleteSignup(context.Context, *UserCompleteSignupRequest) (*UserCompleteSignupResponse, error)
+	UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
 	mustEmbedUnimplementedUserAccountAPIServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedUserAccountAPIServer) UserResendSignup(context.Context, *User
 }
 func (UnimplementedUserAccountAPIServer) UserCompleteSignup(context.Context, *UserCompleteSignupRequest) (*UserCompleteSignupResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCompleteSignup not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
 func (UnimplementedUserAccountAPIServer) mustEmbedUnimplementedUserAccountAPIServer() {}
 func (UnimplementedUserAccountAPIServer) testEmbeddedByValue()                        {}
@@ -172,6 +188,24 @@ func _UserAccountAPI_UserCompleteSignup_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAccountAPI_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserLogin(ctx, req.(*UserLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAccountAPI_ServiceDesc is the grpc.ServiceDesc for UserAccountAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var UserAccountAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserCompleteSignup",
 			Handler:    _UserAccountAPI_UserCompleteSignup_Handler,
+		},
+		{
+			MethodName: "UserLogin",
+			Handler:    _UserAccountAPI_UserLogin_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

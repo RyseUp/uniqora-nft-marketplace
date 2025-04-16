@@ -11,6 +11,7 @@ import (
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/models"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/mq"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/repositories"
+	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/security"
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -220,5 +221,56 @@ func (s *UserAPI) UserResendSignup(ctx context.Context, c *connect.Request[v1.Us
 	return connect.NewResponse(&v1.UserResendSignupResponse{
 		Message:   "complete-resend-sign-up",
 		ExpiredAt: timestamppb.New(time.Now().Add(24 * time.Hour)),
+	}), nil
+}
+
+func (s *UserAPI) UserLogin(ctx context.Context, c *connect.Request[v1.UserLoginRequest]) (*connect.Response[v1.UserLoginResponse], error) {
+	var (
+		req      = c.Msg
+		email    = req.GetEmail()
+		password = req.GetPassword()
+	)
+
+	user, err := s.userRepo.GetUserByUserEmail(ctx, email)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user information: %w", err))
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid credentials"))
+	}
+
+	accessToken, exp, err := security.GenerateJWT(user.UserID, s.cfg.JWT.SecretKey)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("generate jwt: %w", err))
+	}
+
+	sessionID := uuid.New().String()
+	refreshToken, _, err := security.GenerateRefreshToken(sessionID, s.cfg.JWT.SecretKey)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("generate refresh token: %w", err))
+	}
+
+	currentTime := time.Now()
+	expiredAt := currentTime.Add(7 * 24 * time.Hour)
+
+	newUserSession := &models.UserSession{
+		SessionID:    sessionID,
+		UserID:       user.UserID,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		UserAgent:    c.Header().Get("User-Agent"),
+		IPAddress:    "",
+		ExpiresAt:    expiredAt,
+	}
+
+	if err := s.userRepo.CreateUserSession(ctx, newUserSession); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create user session: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserLoginResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		ExpiresAt:    timestamppb.New(exp),
 	}), nil
 }

@@ -42,6 +42,9 @@ const (
 	// UserAccountAPIUserCompleteSignupProcedure is the fully-qualified name of the UserAccountAPI's
 	// UserCompleteSignup RPC.
 	UserAccountAPIUserCompleteSignupProcedure = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
+	// UserAccountAPIUserLoginProcedure is the fully-qualified name of the UserAccountAPI's UserLogin
+	// RPC.
+	UserAccountAPIUserLoginProcedure = "/api.user.v1.UserAccountAPI/UserLogin"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
@@ -49,6 +52,7 @@ type UserAccountAPIClient interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
 	UserResendSignup(context.Context, *connect_go.Request[v1.UserResendSignupRequest]) (*connect_go.Response[v1.UserResendSignupResponse], error)
 	UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error)
+	UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -76,6 +80,11 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			baseURL+UserAccountAPIUserCompleteSignupProcedure,
 			opts...,
 		),
+		userLogin: connect_go.NewClient[v1.UserLoginRequest, v1.UserLoginResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserLoginProcedure,
+			opts...,
+		),
 	}
 }
 
@@ -84,6 +93,7 @@ type userAccountAPIClient struct {
 	userSignup         *connect_go.Client[v1.UserSignupRequest, v1.UserSignupResponse]
 	userResendSignup   *connect_go.Client[v1.UserResendSignupRequest, v1.UserResendSignupResponse]
 	userCompleteSignup *connect_go.Client[v1.UserCompleteSignupRequest, v1.UserCompleteSignupResponse]
+	userLogin          *connect_go.Client[v1.UserLoginRequest, v1.UserLoginResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -101,11 +111,17 @@ func (c *userAccountAPIClient) UserCompleteSignup(ctx context.Context, req *conn
 	return c.userCompleteSignup.CallUnary(ctx, req)
 }
 
+// UserLogin calls api.user.v1.UserAccountAPI.UserLogin.
+func (c *userAccountAPIClient) UserLogin(ctx context.Context, req *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error) {
+	return c.userLogin.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
 	UserResendSignup(context.Context, *connect_go.Request[v1.UserResendSignupRequest]) (*connect_go.Response[v1.UserResendSignupResponse], error)
 	UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error)
+	UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -129,6 +145,11 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		svc.UserCompleteSignup,
 		opts...,
 	)
+	userAccountAPIUserLoginHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserLoginProcedure,
+		svc.UserLogin,
+		opts...,
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
@@ -137,6 +158,8 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 			userAccountAPIUserResendSignupHandler.ServeHTTP(w, r)
 		case UserAccountAPIUserCompleteSignupProcedure:
 			userAccountAPIUserCompleteSignupHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserLoginProcedure:
+			userAccountAPIUserLoginHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -156,4 +179,8 @@ func (UnimplementedUserAccountAPIHandler) UserResendSignup(context.Context, *con
 
 func (UnimplementedUserAccountAPIHandler) UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserCompleteSignup is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserLogin is not implemented"))
 }

@@ -10,6 +10,7 @@ import (
 type User interface {
 	GetUserByUserEmail(ctx context.Context, email string) (*models.User, error)
 	UserRegister
+	UserSession
 }
 
 var _ User = &UserStore{}
