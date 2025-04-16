@@ -17,6 +17,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
+	"net/http"
 	"time"
 )
 
@@ -316,5 +317,50 @@ func (s *UserAPI) UserRefreshToken(ctx context.Context, c *connect.Request[v1.Us
 		AccessToken:  accessToken,
 		RefreshToken: newRefreshToken,
 		ExpiresAt:    timestamppb.New(exp),
+	}), nil
+}
+
+func (s *UserAPI) UserLogout(ctx context.Context, c *connect.Request[v1.UserLogoutRequest]) (*connect.Response[v1.UserLogoutResponse], error) {
+	_, ok := ctx.Value("user_id").(string)
+	if !ok {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("user_id not found"))
+	}
+	cookieHeader := c.Header().Get("Cookie")
+	accessToken := security.ExtractTokenFromCookie(cookieHeader)
+	if accessToken == "" {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("missing access token"))
+	}
+
+	if err := s.userRepo.DeleteUserSessionByAccessToken(ctx, accessToken); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to delete user session: %w", err))
+	}
+
+	cookies := []*http.Cookie{
+		{
+			Name:     "access_token",
+			Value:    "",
+			Path:     "/",
+			Expires:  time.Unix(0, 0),
+			Secure:   true,
+			HttpOnly: true,
+			SameSite: http.SameSiteStrictMode,
+		},
+		{
+			Name:     "refresh_token",
+			Value:    "",
+			Path:     "/",
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteStrictMode,
+			Expires:  time.Unix(0, 0),
+		},
+	}
+
+	for _, cookie := range cookies {
+		c.Header().Add("Set-Cookie", cookie.String())
+	}
+
+	return connect.NewResponse(&v1.UserLogoutResponse{
+		Message: "user-logout-success",
 	}), nil
 }

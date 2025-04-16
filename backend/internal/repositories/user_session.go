@@ -9,6 +9,7 @@ type UserSession interface {
 	CreateUserSession(ctx context.Context, session *models.UserSession) error
 	GetSessionByRefreshToken(ctx context.Context, refreshToken string) (*models.UserSession, error)
 	DeleteSessionByRefreshToken(ctx context.Context, refreshToken string) error
+	DeleteUserSessionByAccessToken(ctx context.Context, accessToken string) error
 }
 
 func (s *UserStore) CreateUserSession(ctx context.Context, session *models.UserSession) error {
@@ -35,8 +36,14 @@ func (s *UserStore) GetSessionByRefreshToken(ctx context.Context, refreshToken s
 
 func (s *UserStore) DeleteSessionByRefreshToken(ctx context.Context, refreshToken string) error {
 	return s.db.WithContext(ctx).
-		Model(&models.UserSession{}).
 		Where("refresh_token = ?", refreshToken).
+		Delete(&models.UserSession{}).
+		Error
+}
+
+func (s *UserStore) DeleteUserSessionByAccessToken(ctx context.Context, accessToken string) error {
+	return s.db.WithContext(ctx).
+		Where("access_token = ?", accessToken).
 		Delete(&models.UserSession{}).
 		Error
 }
