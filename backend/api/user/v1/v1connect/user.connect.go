@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect_go.IsAtLeastVersion0_1_0
+const _ = connect_go.IsAtLeastVersion1_7_0
 
 const (
 	// UserAccountAPIName is the fully-qualified name of the UserAccountAPI service.
@@ -51,6 +51,12 @@ const (
 	// UserAccountAPIUserLogoutProcedure is the fully-qualified name of the UserAccountAPI's UserLogout
 	// RPC.
 	UserAccountAPIUserLogoutProcedure = "/api.user.v1.UserAccountAPI/UserLogout"
+	// UserAccountAPIUserUpdateProfileProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserUpdateProfile RPC.
+	UserAccountAPIUserUpdateProfileProcedure = "/api.user.v1.UserAccountAPI/UserUpdateProfile"
+	// UserAccountAPIUserGetSelfProfileProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserGetSelfProfile RPC.
+	UserAccountAPIUserGetSelfProfileProcedure = "/api.user.v1.UserAccountAPI/UserGetSelfProfile"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
@@ -61,6 +67,8 @@ type UserAccountAPIClient interface {
 	UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error)
 	UserRefreshToken(context.Context, *connect_go.Request[v1.UserRefreshTokenRequest]) (*connect_go.Response[v1.UserRefreshTokenResponse], error)
 	UserLogout(context.Context, *connect_go.Request[v1.UserLogoutRequest]) (*connect_go.Response[v1.UserLogoutResponse], error)
+	UserUpdateProfile(context.Context, *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error)
+	UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -103,6 +111,17 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			baseURL+UserAccountAPIUserLogoutProcedure,
 			opts...,
 		),
+		userUpdateProfile: connect_go.NewClient[v1.UserUpdateProfileRequest, v1.UserUpdateProfileResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserUpdateProfileProcedure,
+			opts...,
+		),
+		userGetSelfProfile: connect_go.NewClient[v1.UserGetSelfProfileRequest, v1.UserGetSelfProfileResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserGetSelfProfileProcedure,
+			connect_go.WithIdempotency(connect_go.IdempotencyNoSideEffects),
+			connect_go.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -114,6 +133,8 @@ type userAccountAPIClient struct {
 	userLogin          *connect_go.Client[v1.UserLoginRequest, v1.UserLoginResponse]
 	userRefreshToken   *connect_go.Client[v1.UserRefreshTokenRequest, v1.UserRefreshTokenResponse]
 	userLogout         *connect_go.Client[v1.UserLogoutRequest, v1.UserLogoutResponse]
+	userUpdateProfile  *connect_go.Client[v1.UserUpdateProfileRequest, v1.UserUpdateProfileResponse]
+	userGetSelfProfile *connect_go.Client[v1.UserGetSelfProfileRequest, v1.UserGetSelfProfileResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -146,6 +167,16 @@ func (c *userAccountAPIClient) UserLogout(ctx context.Context, req *connect_go.R
 	return c.userLogout.CallUnary(ctx, req)
 }
 
+// UserUpdateProfile calls api.user.v1.UserAccountAPI.UserUpdateProfile.
+func (c *userAccountAPIClient) UserUpdateProfile(ctx context.Context, req *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error) {
+	return c.userUpdateProfile.CallUnary(ctx, req)
+}
+
+// UserGetSelfProfile calls api.user.v1.UserAccountAPI.UserGetSelfProfile.
+func (c *userAccountAPIClient) UserGetSelfProfile(ctx context.Context, req *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error) {
+	return c.userGetSelfProfile.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
@@ -154,6 +185,8 @@ type UserAccountAPIHandler interface {
 	UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error)
 	UserRefreshToken(context.Context, *connect_go.Request[v1.UserRefreshTokenRequest]) (*connect_go.Response[v1.UserRefreshTokenResponse], error)
 	UserLogout(context.Context, *connect_go.Request[v1.UserLogoutRequest]) (*connect_go.Response[v1.UserLogoutResponse], error)
+	UserUpdateProfile(context.Context, *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error)
+	UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -192,6 +225,17 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		svc.UserLogout,
 		opts...,
 	)
+	userAccountAPIUserUpdateProfileHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserUpdateProfileProcedure,
+		svc.UserUpdateProfile,
+		opts...,
+	)
+	userAccountAPIUserGetSelfProfileHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserGetSelfProfileProcedure,
+		svc.UserGetSelfProfile,
+		connect_go.WithIdempotency(connect_go.IdempotencyNoSideEffects),
+		connect_go.WithHandlerOptions(opts...),
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
@@ -206,6 +250,10 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 			userAccountAPIUserRefreshTokenHandler.ServeHTTP(w, r)
 		case UserAccountAPIUserLogoutProcedure:
 			userAccountAPIUserLogoutHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserUpdateProfileProcedure:
+			userAccountAPIUserUpdateProfileHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserGetSelfProfileProcedure:
+			userAccountAPIUserGetSelfProfileHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -237,4 +285,12 @@ func (UnimplementedUserAccountAPIHandler) UserRefreshToken(context.Context, *con
 
 func (UnimplementedUserAccountAPIHandler) UserLogout(context.Context, *connect_go.Request[v1.UserLogoutRequest]) (*connect_go.Response[v1.UserLogoutResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserLogout is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserUpdateProfile(context.Context, *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserUpdateProfile is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserGetSelfProfile is not implemented"))
 }
