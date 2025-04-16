@@ -28,14 +28,18 @@ const (
 	AuthProviderWallet AuthProvider = "wallet"
 )
 
-type RefreshToken struct {
-	ID        int64  `gorm:"type:bigint;primaryKey;autoIncrement" json:"id"`
-	Token     string `gorm:"type:text;uniqueIndex;not null" json:"token"`
-	UserID    string `gorm:"type:text;not null" json:"user_id"`
-	ExpiredAt string `gorm:"type:timestamp; not null" json:"expired_at"`
-	CreatedAt string `gorm:"type:timestamp; not null" json:"created_at"`
+type UserSession struct {
+	ID           int64     `gorm:"primaryKey;autoIncrement" json:"id"`
+	SessionID    string    `gorm:"type:text;uniqueIndex" json:"session_id"`
+	UserID       string    `gorm:"type:text;not null" json:"user_id"`
+	AccessToken  string    `gorm:"type:text" json:"access_token"`
+	RefreshToken string    `gorm:"type:text;not null" json:"refresh_token"`
+	UserAgent    string    `gorm:"type:text" json:"user_agent"`
+	IPAddress    string    `gorm:"type:text" json:"ip_address"`
+	ExpiresAt    time.Time `gorm:"type:timestamp;not null" json:"expires_at"`
+	CreatedAt    time.Time `gorm:"type:timestamp;not null" json:"created_at"`
 }
 
-func (RefreshToken) TableName() string {
-	return "refresh_token"
+func (UserSession) TableName() string {
+	return "user_sessions"
 }

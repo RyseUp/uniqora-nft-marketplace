@@ -9,6 +9,7 @@ service UserAccountAPI {
   rpc UserSignup (UserSignupRequest) returns (UserSignupResponse) {}
   rpc UserResendSignup (UserResendSignupRequest) returns (UserResendSignupResponse) {}
   rpc UserCompleteSignup (UserCompleteSignupRequest) returns (UserCompleteSignupResponse) {}
+  rpc UserLogin (UserLoginRequest) returns (UserLoginResponse) {}
 }
 
 message UserSignupRequest {
@@ -59,4 +60,22 @@ message UserCompleteSignupRequest{
 
 message UserCompleteSignupResponse {
   string message = 1;
+}
+
+message UserLoginRequest {
+  string email = 1 [(buf.validate.field).string = {
+    email: true
+    min_len: 1
+    max_len: 255
+  }];
+  string password = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 255
+  }];
+}
+
+message UserLoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp expires_at = 3;
 }

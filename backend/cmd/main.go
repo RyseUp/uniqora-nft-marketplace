@@ -7,8 +7,10 @@ import (
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/models"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/mq"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/repositories"
+	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/security"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/services"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/worker"
+	"github.com/bufbuild/connect-go"
 	"log"
 	"net/http"
 )
@@ -19,13 +21,23 @@ func main() {
 	db, err := config.ConnectDatabase(cfg,
 		&models.User{},
 		&models.UserRegister{},
+		&models.UserSession{},
 	)
 
 	if err != nil {
 		log.Fatalf("db: %v", err)
 	}
 
-	// user-service
+	// http-router-service
+	mux := http.NewServeMux()
+
+	// setting-interceptor
+	interceptor := connect.WithInterceptors(
+		security.AuthInterceptor(cfg.JWT.SecretKey),
+		security.SetAccessTokenCookieInterceptor(),
+	)
+
+	// user-service-setting
 	publisher, err := mq.NewPublisher(cfg.RabbitMQ.URL, cfg.RabbitMQ.EmailQueue)
 	if err != nil {
 		log.Fatalf("rabbitmq: %v", err)
@@ -34,11 +46,11 @@ func main() {
 	userRepo := repositories.NewUserStore(db)
 	userService := services.NewUserAPI(cfg, userRepo, emailPublisher)
 
-	// http-router-service
-	mux := http.NewServeMux()
-	mux.Handle(user.NewUserAccountAPIHandler(userService))
+	// authentication-user-service
+	userPath, userHandler := user.NewUserAccountAPIHandler(userService, interceptor)
+	mux.Handle(userPath, userHandler)
 
-	// email_center-consumer-worker
+	// email-consumer-worker
 	go func() {
 		consumer, err := worker.NewEmailConsumer(cfg)
 		if err != nil {

@@ -11,6 +11,7 @@ type Config struct {
 	PostgresSQL string       `mapstructure:"postgres_sql"`
 	Email       EmailConfig  `mapstructure:"email"`
 	RabbitMQ    RabbitConfig `mapstructure:"rabbitmq"`
+	JWT         JWTConfig    `mapstructure:"jwt"`
 }
 
 type EmailConfig struct {
@@ -23,6 +24,10 @@ type EmailConfig struct {
 type RabbitConfig struct {
 	URL        string `mapstructure:"url"`
 	EmailQueue string `mapstructure:"email_queue"`
+}
+
+type JWTConfig struct {
+	SecretKey string `mapstructure:"secret_key"`
 }
 
 func Load() *Config {
@@ -52,6 +57,10 @@ func Load() *Config {
 
 	if envPwd := os.Getenv("EMAIL_PASSWORD"); envPwd != "" {
 		cfg.Email.Password = envPwd
+	}
+
+	if envJWTSecret := os.Getenv("JWT_SECRET_KEY"); envJWTSecret != "" {
+		cfg.JWT.SecretKey = envJWTSecret
 	}
 	return &cfg
 }
