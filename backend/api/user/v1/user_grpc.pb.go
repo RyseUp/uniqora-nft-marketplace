@@ -23,6 +23,7 @@ const (
 	UserAccountAPI_UserResendSignup_FullMethodName   = "/api.user.v1.UserAccountAPI/UserResendSignup"
 	UserAccountAPI_UserCompleteSignup_FullMethodName = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
 	UserAccountAPI_UserLogin_FullMethodName          = "/api.user.v1.UserAccountAPI/UserLogin"
+	UserAccountAPI_UserRefreshToken_FullMethodName   = "/api.user.v1.UserAccountAPI/UserRefreshToken"
 )
 
 // UserAccountAPIClient is the client API for UserAccountAPI service.
@@ -33,6 +34,7 @@ type UserAccountAPIClient interface {
 	UserResendSignup(ctx context.Context, in *UserResendSignupRequest, opts ...grpc.CallOption) (*UserResendSignupResponse, error)
 	UserCompleteSignup(ctx context.Context, in *UserCompleteSignupRequest, opts ...grpc.CallOption) (*UserCompleteSignupResponse, error)
 	UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
+	UserRefreshToken(ctx context.Context, in *UserRefreshTokenRequest, opts ...grpc.CallOption) (*UserRefreshTokenResponse, error)
 }
 
 type userAccountAPIClient struct {
@@ -83,6 +85,16 @@ func (c *userAccountAPIClient) UserLogin(ctx context.Context, in *UserLoginReque
 	return out, nil
 }
 
+func (c *userAccountAPIClient) UserRefreshToken(ctx context.Context, in *UserRefreshTokenRequest, opts ...grpc.CallOption) (*UserRefreshTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserRefreshTokenResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserRefreshToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAccountAPIServer is the server API for UserAccountAPI service.
 // All implementations must embed UnimplementedUserAccountAPIServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type UserAccountAPIServer interface {
 	UserResendSignup(context.Context, *UserResendSignupRequest) (*UserResendSignupResponse, error)
 	UserCompleteSignup(context.Context, *UserCompleteSignupRequest) (*UserCompleteSignupResponse, error)
 	UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
+	UserRefreshToken(context.Context, *UserRefreshTokenRequest) (*UserRefreshTokenResponse, error)
 	mustEmbedUnimplementedUserAccountAPIServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedUserAccountAPIServer) UserCompleteSignup(context.Context, *Us
 }
 func (UnimplementedUserAccountAPIServer) UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserRefreshToken(context.Context, *UserRefreshTokenRequest) (*UserRefreshTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserRefreshToken not implemented")
 }
 func (UnimplementedUserAccountAPIServer) mustEmbedUnimplementedUserAccountAPIServer() {}
 func (UnimplementedUserAccountAPIServer) testEmbeddedByValue()                        {}
@@ -206,6 +222,24 @@ func _UserAccountAPI_UserLogin_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAccountAPI_UserRefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserRefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserRefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserRefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserRefreshToken(ctx, req.(*UserRefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAccountAPI_ServiceDesc is the grpc.ServiceDesc for UserAccountAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +262,10 @@ var UserAccountAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserLogin",
 			Handler:    _UserAccountAPI_UserLogin_Handler,
+		},
+		{
+			MethodName: "UserRefreshToken",
+			Handler:    _UserAccountAPI_UserRefreshToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
