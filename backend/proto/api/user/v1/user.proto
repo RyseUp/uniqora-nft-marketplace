@@ -10,6 +10,7 @@ service UserAccountAPI {
   rpc UserResendSignup (UserResendSignupRequest) returns (UserResendSignupResponse) {}
   rpc UserCompleteSignup (UserCompleteSignupRequest) returns (UserCompleteSignupResponse) {}
   rpc UserLogin (UserLoginRequest) returns (UserLoginResponse) {}
+  rpc UserRefreshToken (UserRefreshTokenRequest) returns (UserRefreshTokenResponse) {}
 }
 
 message UserSignupRequest {
@@ -75,6 +76,16 @@ message UserLoginRequest {
 }
 
 message UserLoginResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+message UserRefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message UserRefreshTokenResponse {
   string access_token = 1;
   string refresh_token = 2;
   google.protobuf.Timestamp expires_at = 3;

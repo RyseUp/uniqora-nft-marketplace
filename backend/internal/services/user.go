@@ -242,13 +242,13 @@ func (s *UserAPI) UserLogin(ctx context.Context, c *connect.Request[v1.UserLogin
 
 	accessToken, exp, err := security.GenerateJWT(user.UserID, s.cfg.JWT.SecretKey)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("generate jwt: %w", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate jwt: %w", err))
 	}
 
 	sessionID := uuid.New().String()
 	refreshToken, _, err := security.GenerateRefreshToken(sessionID, s.cfg.JWT.SecretKey)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("generate refresh token: %w", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate refresh token: %w", err))
 	}
 
 	currentTime := time.Now()
@@ -271,6 +271,50 @@ func (s *UserAPI) UserLogin(ctx context.Context, c *connect.Request[v1.UserLogin
 	return connect.NewResponse(&v1.UserLoginResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
+		ExpiresAt:    timestamppb.New(exp),
+	}), nil
+}
+
+func (s *UserAPI) UserRefreshToken(ctx context.Context, c *connect.Request[v1.UserRefreshTokenRequest]) (*connect.Response[v1.UserRefreshTokenResponse], error) {
+	req := c.Msg
+	oldToken := req.GetRefreshToken()
+
+	tokenInfo, err := s.userRepo.GetSessionByRefreshToken(ctx, oldToken)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid refresh token"))
+	}
+
+	currentTime := time.Now()
+	if currentTime.After(tokenInfo.ExpiresAt) {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("refresh token expired"))
+	}
+
+	accessToken, exp, err := security.GenerateJWT(tokenInfo.UserID, tokenInfo.UserID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate jwt: %w", err))
+	}
+
+	newRefreshToken, _, err := security.GenerateRefreshToken(tokenInfo.UserID, tokenInfo.UserID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate refresh token: %w", err))
+	}
+
+	if err = s.userRepo.DeleteSessionByRefreshToken(ctx, oldToken); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to delete old refresh token"))
+	}
+
+	err = s.userRepo.CreateUserSession(ctx, &models.UserSession{
+		RefreshToken: newRefreshToken,
+		UserID:       tokenInfo.UserID,
+		ExpiresAt:    time.Now().Add(7 * 24 * time.Hour),
+	})
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate new refresh token: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserRefreshTokenResponse{
+		AccessToken:  accessToken,
+		RefreshToken: newRefreshToken,
 		ExpiresAt:    timestamppb.New(exp),
 	}), nil
 }

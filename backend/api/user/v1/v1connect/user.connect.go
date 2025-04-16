@@ -45,6 +45,9 @@ const (
 	// UserAccountAPIUserLoginProcedure is the fully-qualified name of the UserAccountAPI's UserLogin
 	// RPC.
 	UserAccountAPIUserLoginProcedure = "/api.user.v1.UserAccountAPI/UserLogin"
+	// UserAccountAPIUserRefreshTokenProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserRefreshToken RPC.
+	UserAccountAPIUserRefreshTokenProcedure = "/api.user.v1.UserAccountAPI/UserRefreshToken"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
@@ -53,6 +56,7 @@ type UserAccountAPIClient interface {
 	UserResendSignup(context.Context, *connect_go.Request[v1.UserResendSignupRequest]) (*connect_go.Response[v1.UserResendSignupResponse], error)
 	UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error)
 	UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error)
+	UserRefreshToken(context.Context, *connect_go.Request[v1.UserRefreshTokenRequest]) (*connect_go.Response[v1.UserRefreshTokenResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -85,6 +89,11 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			baseURL+UserAccountAPIUserLoginProcedure,
 			opts...,
 		),
+		userRefreshToken: connect_go.NewClient[v1.UserRefreshTokenRequest, v1.UserRefreshTokenResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserRefreshTokenProcedure,
+			opts...,
+		),
 	}
 }
 
@@ -94,6 +103,7 @@ type userAccountAPIClient struct {
 	userResendSignup   *connect_go.Client[v1.UserResendSignupRequest, v1.UserResendSignupResponse]
 	userCompleteSignup *connect_go.Client[v1.UserCompleteSignupRequest, v1.UserCompleteSignupResponse]
 	userLogin          *connect_go.Client[v1.UserLoginRequest, v1.UserLoginResponse]
+	userRefreshToken   *connect_go.Client[v1.UserRefreshTokenRequest, v1.UserRefreshTokenResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -116,12 +126,18 @@ func (c *userAccountAPIClient) UserLogin(ctx context.Context, req *connect_go.Re
 	return c.userLogin.CallUnary(ctx, req)
 }
 
+// UserRefreshToken calls api.user.v1.UserAccountAPI.UserRefreshToken.
+func (c *userAccountAPIClient) UserRefreshToken(ctx context.Context, req *connect_go.Request[v1.UserRefreshTokenRequest]) (*connect_go.Response[v1.UserRefreshTokenResponse], error) {
+	return c.userRefreshToken.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
 	UserResendSignup(context.Context, *connect_go.Request[v1.UserResendSignupRequest]) (*connect_go.Response[v1.UserResendSignupResponse], error)
 	UserCompleteSignup(context.Context, *connect_go.Request[v1.UserCompleteSignupRequest]) (*connect_go.Response[v1.UserCompleteSignupResponse], error)
 	UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error)
+	UserRefreshToken(context.Context, *connect_go.Request[v1.UserRefreshTokenRequest]) (*connect_go.Response[v1.UserRefreshTokenResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -150,6 +166,11 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		svc.UserLogin,
 		opts...,
 	)
+	userAccountAPIUserRefreshTokenHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserRefreshTokenProcedure,
+		svc.UserRefreshToken,
+		opts...,
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
@@ -160,6 +181,8 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 			userAccountAPIUserCompleteSignupHandler.ServeHTTP(w, r)
 		case UserAccountAPIUserLoginProcedure:
 			userAccountAPIUserLoginHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserRefreshTokenProcedure:
+			userAccountAPIUserRefreshTokenHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -183,4 +206,8 @@ func (UnimplementedUserAccountAPIHandler) UserCompleteSignup(context.Context, *c
 
 func (UnimplementedUserAccountAPIHandler) UserLogin(context.Context, *connect_go.Request[v1.UserLoginRequest]) (*connect_go.Response[v1.UserLoginResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserLogin is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserRefreshToken(context.Context, *connect_go.Request[v1.UserRefreshTokenRequest]) (*connect_go.Response[v1.UserRefreshTokenResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserRefreshToken is not implemented"))
 }
