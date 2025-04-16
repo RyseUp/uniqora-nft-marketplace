@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="user-resend-sign-up" />
+    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="user-resend-sign-up">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/repositories/user_session.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/repositories/user_session.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/internal/services/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/services/user.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,7 +33,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feat/user-logout" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -59,7 +68,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feat/user-logout",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace/backend",
@@ -117,21 +126,9 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="set up code folder structure" />
     <MESSAGE value="user-resend-sign-up" />
-    <MESSAGE value="user-logout" />
-    <option name="LAST_COMMIT_MESSAGE" value="user-logout" />
+    <option name="LAST_COMMIT_MESSAGE" value="user-resend-sign-up" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
-          <line>193</line>
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

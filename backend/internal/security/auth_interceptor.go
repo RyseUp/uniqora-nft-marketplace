@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func extractTokenFromCookie(cookieHeader string) string {
+func ExtractTokenFromCookie(cookieHeader string) string {
 	for _, cookie := range strings.Split(cookieHeader, ";") {
 		cookie = strings.TrimSpace(cookie)
 		if strings.HasPrefix(cookie, "access_token=") {
@@ -32,7 +32,7 @@ func AuthInterceptor(secretKey string) connect.UnaryInterceptorFunc {
 			}
 
 			cookieHeader := request.Header().Get("Cookie")
-			tokenString := extractTokenFromCookie(cookieHeader)
+			tokenString := ExtractTokenFromCookie(cookieHeader)
 			if tokenString == "" {
 				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("missing access token"))
 			}

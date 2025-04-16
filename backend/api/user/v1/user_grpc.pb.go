@@ -24,6 +24,7 @@ const (
 	UserAccountAPI_UserCompleteSignup_FullMethodName = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
 	UserAccountAPI_UserLogin_FullMethodName          = "/api.user.v1.UserAccountAPI/UserLogin"
 	UserAccountAPI_UserRefreshToken_FullMethodName   = "/api.user.v1.UserAccountAPI/UserRefreshToken"
+	UserAccountAPI_UserLogout_FullMethodName         = "/api.user.v1.UserAccountAPI/UserLogout"
 )
 
 // UserAccountAPIClient is the client API for UserAccountAPI service.
@@ -35,6 +36,7 @@ type UserAccountAPIClient interface {
 	UserCompleteSignup(ctx context.Context, in *UserCompleteSignupRequest, opts ...grpc.CallOption) (*UserCompleteSignupResponse, error)
 	UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 	UserRefreshToken(ctx context.Context, in *UserRefreshTokenRequest, opts ...grpc.CallOption) (*UserRefreshTokenResponse, error)
+	UserLogout(ctx context.Context, in *UserLogoutRequest, opts ...grpc.CallOption) (*UserLogoutResponse, error)
 }
 
 type userAccountAPIClient struct {
@@ -95,6 +97,16 @@ func (c *userAccountAPIClient) UserRefreshToken(ctx context.Context, in *UserRef
 	return out, nil
 }
 
+func (c *userAccountAPIClient) UserLogout(ctx context.Context, in *UserLogoutRequest, opts ...grpc.CallOption) (*UserLogoutResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserLogoutResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserLogout_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAccountAPIServer is the server API for UserAccountAPI service.
 // All implementations must embed UnimplementedUserAccountAPIServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type UserAccountAPIServer interface {
 	UserCompleteSignup(context.Context, *UserCompleteSignupRequest) (*UserCompleteSignupResponse, error)
 	UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
 	UserRefreshToken(context.Context, *UserRefreshTokenRequest) (*UserRefreshTokenResponse, error)
+	UserLogout(context.Context, *UserLogoutRequest) (*UserLogoutResponse, error)
 	mustEmbedUnimplementedUserAccountAPIServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedUserAccountAPIServer) UserLogin(context.Context, *UserLoginRe
 }
 func (UnimplementedUserAccountAPIServer) UserRefreshToken(context.Context, *UserRefreshTokenRequest) (*UserRefreshTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRefreshToken not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserLogout(context.Context, *UserLogoutRequest) (*UserLogoutResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserLogout not implemented")
 }
 func (UnimplementedUserAccountAPIServer) mustEmbedUnimplementedUserAccountAPIServer() {}
 func (UnimplementedUserAccountAPIServer) testEmbeddedByValue()                        {}
@@ -240,6 +256,24 @@ func _UserAccountAPI_UserRefreshToken_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAccountAPI_UserLogout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserLogoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserLogout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserLogout_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserLogout(ctx, req.(*UserLogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAccountAPI_ServiceDesc is the grpc.ServiceDesc for UserAccountAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var UserAccountAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserRefreshToken",
 			Handler:    _UserAccountAPI_UserRefreshToken_Handler,
+		},
+		{
+			MethodName: "UserLogout",
+			Handler:    _UserAccountAPI_UserLogout_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
