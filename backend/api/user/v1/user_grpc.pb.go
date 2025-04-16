@@ -25,6 +25,8 @@ const (
 	UserAccountAPI_UserLogin_FullMethodName          = "/api.user.v1.UserAccountAPI/UserLogin"
 	UserAccountAPI_UserRefreshToken_FullMethodName   = "/api.user.v1.UserAccountAPI/UserRefreshToken"
 	UserAccountAPI_UserLogout_FullMethodName         = "/api.user.v1.UserAccountAPI/UserLogout"
+	UserAccountAPI_UserUpdateProfile_FullMethodName  = "/api.user.v1.UserAccountAPI/UserUpdateProfile"
+	UserAccountAPI_UserGetSelfProfile_FullMethodName = "/api.user.v1.UserAccountAPI/UserGetSelfProfile"
 )
 
 // UserAccountAPIClient is the client API for UserAccountAPI service.
@@ -37,6 +39,8 @@ type UserAccountAPIClient interface {
 	UserLogin(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 	UserRefreshToken(ctx context.Context, in *UserRefreshTokenRequest, opts ...grpc.CallOption) (*UserRefreshTokenResponse, error)
 	UserLogout(ctx context.Context, in *UserLogoutRequest, opts ...grpc.CallOption) (*UserLogoutResponse, error)
+	UserUpdateProfile(ctx context.Context, in *UserUpdateProfileRequest, opts ...grpc.CallOption) (*UserUpdateProfileResponse, error)
+	UserGetSelfProfile(ctx context.Context, in *UserGetSelfProfileRequest, opts ...grpc.CallOption) (*UserGetSelfProfileResponse, error)
 }
 
 type userAccountAPIClient struct {
@@ -107,6 +111,26 @@ func (c *userAccountAPIClient) UserLogout(ctx context.Context, in *UserLogoutReq
 	return out, nil
 }
 
+func (c *userAccountAPIClient) UserUpdateProfile(ctx context.Context, in *UserUpdateProfileRequest, opts ...grpc.CallOption) (*UserUpdateProfileResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserUpdateProfileResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserUpdateProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userAccountAPIClient) UserGetSelfProfile(ctx context.Context, in *UserGetSelfProfileRequest, opts ...grpc.CallOption) (*UserGetSelfProfileResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserGetSelfProfileResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserGetSelfProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAccountAPIServer is the server API for UserAccountAPI service.
 // All implementations must embed UnimplementedUserAccountAPIServer
 // for forward compatibility.
@@ -117,6 +141,8 @@ type UserAccountAPIServer interface {
 	UserLogin(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
 	UserRefreshToken(context.Context, *UserRefreshTokenRequest) (*UserRefreshTokenResponse, error)
 	UserLogout(context.Context, *UserLogoutRequest) (*UserLogoutResponse, error)
+	UserUpdateProfile(context.Context, *UserUpdateProfileRequest) (*UserUpdateProfileResponse, error)
+	UserGetSelfProfile(context.Context, *UserGetSelfProfileRequest) (*UserGetSelfProfileResponse, error)
 	mustEmbedUnimplementedUserAccountAPIServer()
 }
 
@@ -144,6 +170,12 @@ func (UnimplementedUserAccountAPIServer) UserRefreshToken(context.Context, *User
 }
 func (UnimplementedUserAccountAPIServer) UserLogout(context.Context, *UserLogoutRequest) (*UserLogoutResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserLogout not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserUpdateProfile(context.Context, *UserUpdateProfileRequest) (*UserUpdateProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserUpdateProfile not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserGetSelfProfile(context.Context, *UserGetSelfProfileRequest) (*UserGetSelfProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserGetSelfProfile not implemented")
 }
 func (UnimplementedUserAccountAPIServer) mustEmbedUnimplementedUserAccountAPIServer() {}
 func (UnimplementedUserAccountAPIServer) testEmbeddedByValue()                        {}
@@ -274,6 +306,42 @@ func _UserAccountAPI_UserLogout_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAccountAPI_UserUpdateProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserUpdateProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserUpdateProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserUpdateProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserUpdateProfile(ctx, req.(*UserUpdateProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserAccountAPI_UserGetSelfProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserGetSelfProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserGetSelfProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserGetSelfProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserGetSelfProfile(ctx, req.(*UserGetSelfProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAccountAPI_ServiceDesc is the grpc.ServiceDesc for UserAccountAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +372,14 @@ var UserAccountAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserLogout",
 			Handler:    _UserAccountAPI_UserLogout_Handler,
+		},
+		{
+			MethodName: "UserUpdateProfile",
+			Handler:    _UserAccountAPI_UserUpdateProfile_Handler,
+		},
+		{
+			MethodName: "UserGetSelfProfile",
+			Handler:    _UserAccountAPI_UserGetSelfProfile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

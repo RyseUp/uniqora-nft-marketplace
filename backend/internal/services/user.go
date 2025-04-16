@@ -8,6 +8,7 @@ import (
 	v1 "github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1/v1connect"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/config"
+	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/mapper"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/models"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/mq"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/repositories"
@@ -362,5 +363,51 @@ func (s *UserAPI) UserLogout(ctx context.Context, c *connect.Request[v1.UserLogo
 
 	return connect.NewResponse(&v1.UserLogoutResponse{
 		Message: "user-logout-success",
+	}), nil
+}
+
+func (s *UserAPI) UserUpdateProfile(ctx context.Context, c *connect.Request[v1.UserUpdateProfileRequest]) (*connect.Response[v1.UserUpdateProfileResponse], error) {
+	var (
+		req       = c.Msg
+		username  = req.GetUsername()
+		avatarUrl = req.GetAvatarUrl()
+	)
+
+	userID, ok := ctx.Value("user_id").(string)
+	if !ok {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("user_id not found"))
+	}
+
+	userInfo, err := s.userRepo.GetUserByUserID(ctx, userID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user by user id: %w", err))
+	}
+
+	// update user profile
+	userInfo.UserName = username
+	userInfo.AvatarURL = avatarUrl
+
+	if err := s.userRepo.UpdateUserProfile(ctx, userInfo); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update user profile: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserUpdateProfileResponse{
+		Message: "update-user-profile-success",
+	}), nil
+}
+
+func (s *UserAPI) UserGetSelfProfile(ctx context.Context, c *connect.Request[v1.UserGetSelfProfileRequest]) (*connect.Response[v1.UserGetSelfProfileResponse], error) {
+	userID, ok := ctx.Value("user_id").(string)
+	if !ok {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("user_id not found"))
+	}
+
+	userInfo, err := s.userRepo.GetUserByUserID(ctx, userID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user by user-id: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserGetSelfProfileResponse{
+		Data: mapper.ModelToProtoUserInfo(userInfo),
 	}), nil
 }

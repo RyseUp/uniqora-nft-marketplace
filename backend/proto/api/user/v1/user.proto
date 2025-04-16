@@ -12,6 +12,10 @@ service UserAccountAPI {
   rpc UserLogin (UserLoginRequest) returns (UserLoginResponse) {}
   rpc UserRefreshToken (UserRefreshTokenRequest) returns (UserRefreshTokenResponse) {}
   rpc UserLogout (UserLogoutRequest) returns (UserLogoutResponse) {}
+  rpc UserUpdateProfile (UserUpdateProfileRequest) returns (UserUpdateProfileResponse) {}
+  rpc UserGetSelfProfile (UserGetSelfProfileRequest) returns (UserGetSelfProfileResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
 }
 
 message UserSignupRequest {
@@ -97,4 +101,27 @@ message UserLogoutRequest {
 
 message UserLogoutResponse {
   string message = 1;
+}
+
+message UserUpdateProfileRequest {
+  string username = 1 [(buf.validate.field).string = {
+    min_len: 1;
+  }];
+  string avatar_url = 2;
+}
+
+message UserUpdateProfileResponse {
+  string message = 1;
+}
+
+message User {
+  string user_name = 1;
+  string email = 2;
+  string avatar_url = 3;
+}
+
+message UserGetSelfProfileRequest {}
+
+message UserGetSelfProfileResponse {
+  User data = 1;
 }
