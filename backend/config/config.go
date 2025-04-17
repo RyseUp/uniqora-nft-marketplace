@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -12,6 +13,7 @@ type Config struct {
 	Email       EmailConfig  `mapstructure:"email"`
 	RabbitMQ    RabbitConfig `mapstructure:"rabbitmq"`
 	JWT         JWTConfig    `mapstructure:"jwt"`
+	Google      GoogleConfig `mapstructure:"google"`
 }
 
 type EmailConfig struct {
@@ -28,6 +30,12 @@ type RabbitConfig struct {
 
 type JWTConfig struct {
 	SecretKey string `mapstructure:"secret_key"`
+}
+
+type GoogleConfig struct {
+	ClientID     string   `mapstructure:"client_id"`
+	ClientSecret string   `mapstructure:"client_secret"`
+	Scopes       []string `mapstructure:"scopes"`
 }
 
 func Load() *Config {
@@ -61,6 +69,17 @@ func Load() *Config {
 
 	if envJWTSecret := os.Getenv("JWT_SECRET_KEY"); envJWTSecret != "" {
 		cfg.JWT.SecretKey = envJWTSecret
+	}
+
+	if envClientID := os.Getenv("GOOGLE_CLIENT_ID"); envClientID != "" {
+		cfg.Google.ClientID = envClientID
+	}
+
+	if envClientSecret := os.Getenv("GOOGLE_CLIENT_SECRET"); envClientSecret != "" {
+		cfg.Google.ClientSecret = envClientSecret
+	}
+	if envScopes := os.Getenv("GOOGLE_SCOPES"); envScopes != "" {
+		cfg.Google.Scopes = strings.Split(envScopes, ",")
 	}
 	return &cfg
 }
