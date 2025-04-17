@@ -16,6 +16,7 @@ service UserAccountAPI {
   rpc UserGetSelfProfile (UserGetSelfProfileRequest) returns (UserGetSelfProfileResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
   }
+  rpc UserChangePassword (UserChangePasswordRequest) returns (UserChangePasswordResponse) {}
 }
 
 message UserSignupRequest {
@@ -124,4 +125,17 @@ message UserGetSelfProfileRequest {}
 
 message UserGetSelfProfileResponse {
   User data = 1;
+}
+
+message UserChangePasswordRequest {
+  string old_password = 1 [(buf.validate.field).string = {
+    min_len : 6
+  }];
+  string new_password = 2 [(buf.validate.field).string = {
+    min_len : 6
+  }];
+}
+
+message UserChangePasswordResponse {
+  string message = 1;
 }
