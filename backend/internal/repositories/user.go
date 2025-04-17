@@ -11,6 +11,7 @@ type User interface {
 	GetUserByUserEmail(ctx context.Context, email string) (*models.User, error)
 	GetUserByUserID(ctx context.Context, userID string) (*models.User, error)
 	UpdateUserProfile(ctx context.Context, user *models.User) error
+	UpdateUserPasswordByUserID(ctx context.Context, userID, newPassword string) error
 	UserRegister
 	UserSession
 }
@@ -64,6 +65,21 @@ func (s *UserStore) UpdateUserProfile(ctx context.Context, user *models.User) er
 			"avatar_url": user.AvatarURL,
 		}).
 		Error
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserStore) UpdateUserPasswordByUserID(ctx context.Context, userID, newPassword string) error {
+	err := s.db.WithContext(ctx).
+		Model(&models.User{}).
+		Where("user_id = ?", userID).
+		Updates(map[string]interface{}{
+			"password": newPassword,
+		}).Error
 
 	if err != nil {
 		return err

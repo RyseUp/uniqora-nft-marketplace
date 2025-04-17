@@ -57,6 +57,9 @@ const (
 	// UserAccountAPIUserGetSelfProfileProcedure is the fully-qualified name of the UserAccountAPI's
 	// UserGetSelfProfile RPC.
 	UserAccountAPIUserGetSelfProfileProcedure = "/api.user.v1.UserAccountAPI/UserGetSelfProfile"
+	// UserAccountAPIUserChangePasswordProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserChangePassword RPC.
+	UserAccountAPIUserChangePasswordProcedure = "/api.user.v1.UserAccountAPI/UserChangePassword"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
@@ -69,6 +72,7 @@ type UserAccountAPIClient interface {
 	UserLogout(context.Context, *connect_go.Request[v1.UserLogoutRequest]) (*connect_go.Response[v1.UserLogoutResponse], error)
 	UserUpdateProfile(context.Context, *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error)
 	UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error)
+	UserChangePassword(context.Context, *connect_go.Request[v1.UserChangePasswordRequest]) (*connect_go.Response[v1.UserChangePasswordResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -122,6 +126,11 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			connect_go.WithIdempotency(connect_go.IdempotencyNoSideEffects),
 			connect_go.WithClientOptions(opts...),
 		),
+		userChangePassword: connect_go.NewClient[v1.UserChangePasswordRequest, v1.UserChangePasswordResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserChangePasswordProcedure,
+			opts...,
+		),
 	}
 }
 
@@ -135,6 +144,7 @@ type userAccountAPIClient struct {
 	userLogout         *connect_go.Client[v1.UserLogoutRequest, v1.UserLogoutResponse]
 	userUpdateProfile  *connect_go.Client[v1.UserUpdateProfileRequest, v1.UserUpdateProfileResponse]
 	userGetSelfProfile *connect_go.Client[v1.UserGetSelfProfileRequest, v1.UserGetSelfProfileResponse]
+	userChangePassword *connect_go.Client[v1.UserChangePasswordRequest, v1.UserChangePasswordResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -177,6 +187,11 @@ func (c *userAccountAPIClient) UserGetSelfProfile(ctx context.Context, req *conn
 	return c.userGetSelfProfile.CallUnary(ctx, req)
 }
 
+// UserChangePassword calls api.user.v1.UserAccountAPI.UserChangePassword.
+func (c *userAccountAPIClient) UserChangePassword(ctx context.Context, req *connect_go.Request[v1.UserChangePasswordRequest]) (*connect_go.Response[v1.UserChangePasswordResponse], error) {
+	return c.userChangePassword.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
@@ -187,6 +202,7 @@ type UserAccountAPIHandler interface {
 	UserLogout(context.Context, *connect_go.Request[v1.UserLogoutRequest]) (*connect_go.Response[v1.UserLogoutResponse], error)
 	UserUpdateProfile(context.Context, *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error)
 	UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error)
+	UserChangePassword(context.Context, *connect_go.Request[v1.UserChangePasswordRequest]) (*connect_go.Response[v1.UserChangePasswordResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -236,6 +252,11 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		connect_go.WithIdempotency(connect_go.IdempotencyNoSideEffects),
 		connect_go.WithHandlerOptions(opts...),
 	)
+	userAccountAPIUserChangePasswordHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserChangePasswordProcedure,
+		svc.UserChangePassword,
+		opts...,
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
@@ -254,6 +275,8 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 			userAccountAPIUserUpdateProfileHandler.ServeHTTP(w, r)
 		case UserAccountAPIUserGetSelfProfileProcedure:
 			userAccountAPIUserGetSelfProfileHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserChangePasswordProcedure:
+			userAccountAPIUserChangePasswordHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -293,4 +316,8 @@ func (UnimplementedUserAccountAPIHandler) UserUpdateProfile(context.Context, *co
 
 func (UnimplementedUserAccountAPIHandler) UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserGetSelfProfile is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserChangePassword(context.Context, *connect_go.Request[v1.UserChangePasswordRequest]) (*connect_go.Response[v1.UserChangePasswordResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserChangePassword is not implemented"))
 }

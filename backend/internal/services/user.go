@@ -411,3 +411,38 @@ func (s *UserAPI) UserGetSelfProfile(ctx context.Context, c *connect.Request[v1.
 		Data: mapper.ModelToProtoUserInfo(userInfo),
 	}), nil
 }
+
+func (s *UserAPI) UserChangePassword(ctx context.Context, c *connect.Request[v1.UserChangePasswordRequest]) (*connect.Response[v1.UserChangePasswordResponse], error) {
+	var (
+		req         = c.Msg
+		oldPassword = req.GetOldPassword()
+		newPassword = req.GetNewPassword()
+	)
+
+	userID, ok := ctx.Value("user_id").(string)
+	if !ok {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("unauthorized"))
+	}
+
+	userInfo, err := s.userRepo.GetUserByUserID(ctx, userID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user infomatinon: %w", err))
+	}
+
+	if err = bcrypt.CompareHashAndPassword([]byte(userInfo.Password), []byte(oldPassword)); err != nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid current password"))
+	}
+
+	newHashedPassword, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to hash new password: %w", err))
+	}
+
+	if err = s.userRepo.UpdateUserPasswordByUserID(ctx, userID, string(newHashedPassword)); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to update new password: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserChangePasswordResponse{
+		Message: "user-update-password-success",
+	}), nil
+}
