@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	user "github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1/v1connect"
+	"github.com/RyseUp/uniqora-nft-marketplace/backend/auth"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/config"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/models"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/mq"
@@ -11,6 +12,7 @@ import (
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/services"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/worker"
 	"github.com/bufbuild/connect-go"
+	"go.uber.org/zap"
 	"log"
 	"net/http"
 )
@@ -26,6 +28,19 @@ func main() {
 
 	if err != nil {
 		log.Fatalf("db: %v", err)
+	}
+
+	// set-up-log-errors-clearly
+	logger, err := zap.NewProduction()
+	if err != nil {
+		log.Fatalf("logger: %v", err)
+	}
+	defer logger.Sync()
+
+	// google-auth-config
+	googleConfig, err := auth.NewGoogleOAuthConfig(&cfg.Google)
+	if err != nil {
+		logger.Fatal("failed to initialize Google OAuth2 config", zap.Error(err))
 	}
 
 	// http-router-service
@@ -44,7 +59,7 @@ func main() {
 	}
 	emailPublisher := mq.NewEmailPublisher(publisher, cfg.RabbitMQ.EmailQueue)
 	userRepo := repositories.NewUserStore(db)
-	userService := services.NewUserAPI(cfg, userRepo, emailPublisher)
+	userService := services.NewUserAPI(cfg, userRepo, emailPublisher, googleConfig, logger)
 
 	// authentication-user-service
 	userPath, userHandler := user.NewUserAccountAPIHandler(userService, interceptor)

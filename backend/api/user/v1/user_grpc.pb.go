@@ -28,6 +28,8 @@ const (
 	UserAccountAPI_UserUpdateProfile_FullMethodName  = "/api.user.v1.UserAccountAPI/UserUpdateProfile"
 	UserAccountAPI_UserGetSelfProfile_FullMethodName = "/api.user.v1.UserAccountAPI/UserGetSelfProfile"
 	UserAccountAPI_UserChangePassword_FullMethodName = "/api.user.v1.UserAccountAPI/UserChangePassword"
+	UserAccountAPI_UserGoogleAuth_FullMethodName     = "/api.user.v1.UserAccountAPI/UserGoogleAuth"
+	UserAccountAPI_ExchangeGoogleCode_FullMethodName = "/api.user.v1.UserAccountAPI/ExchangeGoogleCode"
 )
 
 // UserAccountAPIClient is the client API for UserAccountAPI service.
@@ -43,6 +45,9 @@ type UserAccountAPIClient interface {
 	UserUpdateProfile(ctx context.Context, in *UserUpdateProfileRequest, opts ...grpc.CallOption) (*UserUpdateProfileResponse, error)
 	UserGetSelfProfile(ctx context.Context, in *UserGetSelfProfileRequest, opts ...grpc.CallOption) (*UserGetSelfProfileResponse, error)
 	UserChangePassword(ctx context.Context, in *UserChangePasswordRequest, opts ...grpc.CallOption) (*UserChangePasswordResponse, error)
+	// login-via-google
+	UserGoogleAuth(ctx context.Context, in *UserGoogleAuthRequest, opts ...grpc.CallOption) (*UserGoogleAuthResponse, error)
+	ExchangeGoogleCode(ctx context.Context, in *ExchangeGoogleCodeRequest, opts ...grpc.CallOption) (*UserGoogleAuthResponse, error)
 }
 
 type userAccountAPIClient struct {
@@ -143,6 +148,26 @@ func (c *userAccountAPIClient) UserChangePassword(ctx context.Context, in *UserC
 	return out, nil
 }
 
+func (c *userAccountAPIClient) UserGoogleAuth(ctx context.Context, in *UserGoogleAuthRequest, opts ...grpc.CallOption) (*UserGoogleAuthResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserGoogleAuthResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserGoogleAuth_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userAccountAPIClient) ExchangeGoogleCode(ctx context.Context, in *ExchangeGoogleCodeRequest, opts ...grpc.CallOption) (*UserGoogleAuthResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserGoogleAuthResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_ExchangeGoogleCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAccountAPIServer is the server API for UserAccountAPI service.
 // All implementations must embed UnimplementedUserAccountAPIServer
 // for forward compatibility.
@@ -156,6 +181,9 @@ type UserAccountAPIServer interface {
 	UserUpdateProfile(context.Context, *UserUpdateProfileRequest) (*UserUpdateProfileResponse, error)
 	UserGetSelfProfile(context.Context, *UserGetSelfProfileRequest) (*UserGetSelfProfileResponse, error)
 	UserChangePassword(context.Context, *UserChangePasswordRequest) (*UserChangePasswordResponse, error)
+	// login-via-google
+	UserGoogleAuth(context.Context, *UserGoogleAuthRequest) (*UserGoogleAuthResponse, error)
+	ExchangeGoogleCode(context.Context, *ExchangeGoogleCodeRequest) (*UserGoogleAuthResponse, error)
 	mustEmbedUnimplementedUserAccountAPIServer()
 }
 
@@ -192,6 +220,12 @@ func (UnimplementedUserAccountAPIServer) UserGetSelfProfile(context.Context, *Us
 }
 func (UnimplementedUserAccountAPIServer) UserChangePassword(context.Context, *UserChangePasswordRequest) (*UserChangePasswordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserChangePassword not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserGoogleAuth(context.Context, *UserGoogleAuthRequest) (*UserGoogleAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserGoogleAuth not implemented")
+}
+func (UnimplementedUserAccountAPIServer) ExchangeGoogleCode(context.Context, *ExchangeGoogleCodeRequest) (*UserGoogleAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExchangeGoogleCode not implemented")
 }
 func (UnimplementedUserAccountAPIServer) mustEmbedUnimplementedUserAccountAPIServer() {}
 func (UnimplementedUserAccountAPIServer) testEmbeddedByValue()                        {}
@@ -376,6 +410,42 @@ func _UserAccountAPI_UserChangePassword_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAccountAPI_UserGoogleAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserGoogleAuthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserGoogleAuth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserGoogleAuth_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserGoogleAuth(ctx, req.(*UserGoogleAuthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserAccountAPI_ExchangeGoogleCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExchangeGoogleCodeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).ExchangeGoogleCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_ExchangeGoogleCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).ExchangeGoogleCode(ctx, req.(*ExchangeGoogleCodeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAccountAPI_ServiceDesc is the grpc.ServiceDesc for UserAccountAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +488,14 @@ var UserAccountAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserChangePassword",
 			Handler:    _UserAccountAPI_UserChangePassword_Handler,
+		},
+		{
+			MethodName: "UserGoogleAuth",
+			Handler:    _UserAccountAPI_UserGoogleAuth_Handler,
+		},
+		{
+			MethodName: "ExchangeGoogleCode",
+			Handler:    _UserAccountAPI_ExchangeGoogleCode_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

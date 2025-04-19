@@ -5,7 +5,6 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
-	"strings"
 )
 
 type Config struct {
@@ -77,9 +76,6 @@ func Load() *Config {
 
 	if envClientSecret := os.Getenv("GOOGLE_CLIENT_SECRET"); envClientSecret != "" {
 		cfg.Google.ClientSecret = envClientSecret
-	}
-	if envScopes := os.Getenv("GOOGLE_SCOPES"); envScopes != "" {
-		cfg.Google.Scopes = strings.Split(envScopes, ",")
 	}
 	return &cfg
 }
