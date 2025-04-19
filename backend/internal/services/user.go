@@ -3,10 +3,13 @@ package services
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
+	"encoding/json"
 	"errors"
 	"fmt"
 	v1 "github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1/v1connect"
+	"github.com/RyseUp/uniqora-nft-marketplace/backend/auth"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/config"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/mapper"
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/models"
@@ -15,7 +18,9 @@ import (
 	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/security"
 	"github.com/bufbuild/connect-go"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/oauth2"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 	"net/http"
@@ -27,20 +32,26 @@ var (
 )
 
 type UserAPI struct {
-	cfg       *config.Config
-	userRepo  repositories.User
-	publisher *mq.EmailPublisher
+	cfg          *config.Config
+	userRepo     repositories.User
+	publisher    *mq.EmailPublisher
+	googleClient *oauth2.Config
+	logger       *zap.Logger
 }
 
 func NewUserAPI(
 	cfg *config.Config,
 	userRepo repositories.User,
 	publisher *mq.EmailPublisher,
+	googleClient *oauth2.Config,
+	logger *zap.Logger,
 ) *UserAPI {
 	return &UserAPI{
-		cfg:       cfg,
-		userRepo:  userRepo,
-		publisher: publisher,
+		cfg:          cfg,
+		userRepo:     userRepo,
+		publisher:    publisher,
+		googleClient: googleClient,
+		logger:       logger,
 	}
 }
 
@@ -167,7 +178,7 @@ func (s *UserAPI) UserCompleteSignup(ctx context.Context, c *connect.Request[v1.
 	switch {
 	case errors.Is(err, gorm.ErrRecordNotFound):
 	case err != nil:
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user email_center: %w", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user email: %w", err))
 	}
 
 	userID := uuid.New().String()
@@ -185,7 +196,7 @@ func (s *UserAPI) UserCompleteSignup(ctx context.Context, c *connect.Request[v1.
 	}
 
 	if err = s.publisher.PublishWelcomeEmail(ctx, email, newUser.UserName); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to send welcome email_center: %w", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to send welcome email: %w", err))
 	}
 
 	return connect.NewResponse(&v1.UserCompleteSignupResponse{
@@ -205,7 +216,7 @@ func (s *UserAPI) UserResendSignup(ctx context.Context, c *connect.Request[v1.Us
 	case errors.Is(err, gorm.ErrRecordNotFound):
 		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("user didn't have any previous registrations"))
 	case err != nil:
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get last user register email_center: %w", err))
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get last user register email: %w", err))
 	default:
 		if currentTime.After(userRegis.ExpiredAt) {
 			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("you are limited to a certain number of requests"))
@@ -444,5 +455,107 @@ func (s *UserAPI) UserChangePassword(ctx context.Context, c *connect.Request[v1.
 
 	return connect.NewResponse(&v1.UserChangePasswordResponse{
 		Message: "user-update-password-success",
+	}), nil
+}
+
+func (s *UserAPI) ExchangeGoogleCode(ctx context.Context, c *connect.Request[v1.ExchangeGoogleCodeRequest]) (*connect.Response[v1.UserGoogleAuthResponse], error) {
+	var (
+		req  = c.Msg
+		code = req.GetCode()
+	)
+
+	token, err := s.googleClient.Exchange(ctx, code)
+	if err != nil {
+		s.logger.Warn("failed to exchange authorization code", zap.Error(err))
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("failed to exchange code: %w", err))
+	}
+
+	authReq := &connect.Request[v1.UserGoogleAuthRequest]{
+		Msg: &v1.UserGoogleAuthRequest{AccessToken: token.AccessToken},
+	}
+	return s.UserGoogleAuth(ctx, authReq)
+}
+
+func (s *UserAPI) UserGoogleAuth(ctx context.Context, c *connect.Request[v1.UserGoogleAuthRequest]) (*connect.Response[v1.UserGoogleAuthResponse], error) {
+	var (
+		req               = c.Msg
+		googleAccessToken = req.GetAccessToken()
+	)
+
+	client := s.googleClient.Client(ctx, &oauth2.Token{AccessToken: googleAccessToken})
+	reps, err := client.Get("https://www.googleapis.com/oauth2/v2/userinfo") // <-- incase the user info don't need to be realtime can decode and verify via the GoogleIdToken
+	if err != nil || reps.StatusCode != 200 {
+		s.logger.Warn("failed to fetch Google user info", zap.Error(err))
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("failed to fetch user info"))
+	}
+	defer reps.Body.Close()
+
+	var googleFetchUserInfo auth.GoogleAuthResponse
+	if err := json.NewDecoder(reps.Body).Decode(&googleFetchUserInfo); err != nil {
+		s.logger.Warn("failed to decode user info", zap.Error(err))
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("failed to decode user info: %w", err))
+	}
+
+	if googleFetchUserInfo.Email == "" || (googleFetchUserInfo.Sub == "" && googleFetchUserInfo.ID == "") {
+		s.logger.Warn("missing email or sub in user info")
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("invalid user info from Google"))
+	}
+
+	// find or create new user
+	googleID := googleFetchUserInfo.Sub
+	if googleID == "" {
+		googleID = googleFetchUserInfo.ID
+	}
+	userInfo, err := s.userRepo.GetUserByUserEmail(ctx, googleFetchUserInfo.Email)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		userInfo = &models.User{
+			UserID:   uuid.New().String(),
+			UserName: googleFetchUserInfo.Name,
+			Email:    googleFetchUserInfo.Email,
+			Password: "",
+			GoogleID: sql.NullString{String: googleID, Valid: true},
+			Provider: models.AuthProviderGoogle,
+		}
+		if err := s.userRepo.CreateNewUser(ctx, userInfo); err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create new user: %w", err))
+		}
+
+		if err = s.publisher.PublishWelcomeEmail(ctx, userInfo.Email, userInfo.UserName); err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to send welcome email: %w", err))
+		}
+		s.logger.Info("created new user via Google auth", zap.String("email", userInfo.Email))
+	} else if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user: %w", err))
+	}
+
+	accessToken, exp, err := security.GenerateJWT(userInfo.UserID, s.cfg.JWT.SecretKey)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate access token: %w", err))
+	}
+
+	sessionID := uuid.New().String()
+	refreshToken, _, err := security.GenerateRefreshToken(sessionID, s.cfg.JWT.SecretKey)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate refresh token: %w", err))
+	}
+
+	newUserSession := &models.UserSession{
+		SessionID:    sessionID,
+		UserID:       userInfo.UserID,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		UserAgent:    c.Header().Get("User-Agent"),
+		IPAddress:    "",
+		ExpiresAt:    time.Now().Add(7 * 24 * time.Hour),
+	}
+	if err = s.userRepo.CreateUserSession(ctx, newUserSession); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create new user session: %w", err))
+	}
+
+	s.logger.Info("Google auth successful", zap.String("user_id", userInfo.UserID))
+	return connect.NewResponse(&v1.UserGoogleAuthResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		ExpiresAt:    timestamppb.New(exp),
 	}), nil
 }

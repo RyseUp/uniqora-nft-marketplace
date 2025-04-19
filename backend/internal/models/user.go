@@ -1,19 +1,22 @@
 package models
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type User struct {
-	ID            int64        `gorm:"type:bigint;autoIncrement"`
-	UserID        string       `gorm:"type:text;primaryKey;uniqueIndex" json:"user_id"`
-	UserName      string       `gorm:"type:text;uniqueIndex" json:"user_name"`
-	Email         string       `gorm:"type:text;uniqueIndex" json:"email_center"`
-	Password      string       `gorm:"type:text" json:"password"`
-	GoogleID      string       `gorm:"type:text" json:"google_id"`
-	WalletAddress string       `gorm:"type:text" json:"wallet_address"`
-	Provider      AuthProvider `gorm:"type:text" json:"provider"`
-	AvatarURL     string       `gorm:"type:text" json:"avatar_url"`
-	CreatedAt     time.Time    `gorm:"type:timestamp" json:"created_at"`
-	UpdatedAt     time.Time    `gorm:"type:timestamp" json:"updated_at"`
+	ID            int64          `gorm:"type:bigint;autoIncrement"`
+	UserID        string         `gorm:"type:text;primaryKey;uniqueIndex" json:"user_id"`
+	UserName      string         `gorm:"type:text;uniqueIndex" json:"user_name"`
+	Email         string         `gorm:"type:text;uniqueIndex" json:"email_center"`
+	Password      string         `gorm:"type:text" json:"password"`
+	GoogleID      sql.NullString `gorm:"type:text;uniqueIndex" json:"google_id"`
+	WalletAddress string         `gorm:"type:text" json:"wallet_address"`
+	Provider      AuthProvider   `gorm:"type:text" json:"provider"`
+	AvatarURL     string         `gorm:"type:text" json:"avatar_url"`
+	CreatedAt     time.Time      `gorm:"type:timestamp" json:"created_at"`
+	UpdatedAt     time.Time      `gorm:"type:timestamp" json:"updated_at"`
 }
 
 func (User) TableName() string {

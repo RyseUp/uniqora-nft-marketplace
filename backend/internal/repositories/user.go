@@ -8,6 +8,7 @@ import (
 )
 
 type User interface {
+	CreateNewUser(ctx context.Context, user *models.User) error
 	GetUserByUserEmail(ctx context.Context, email string) (*models.User, error)
 	GetUserByUserID(ctx context.Context, userID string) (*models.User, error)
 	UpdateUserProfile(ctx context.Context, user *models.User) error
@@ -26,16 +27,19 @@ func NewUserStore(db *gorm.DB) *UserStore {
 	return &UserStore{db: db}
 }
 
+func (s *UserStore) CreateNewUser(ctx context.Context, user *models.User) error {
+	return s.db.WithContext(ctx).Model(&models.User{}).Create(user).Error
+}
+
 func (s *UserStore) GetUserByUserEmail(ctx context.Context, email string) (*models.User, error) {
 	var res models.User
 	err := s.db.WithContext(ctx).
 		Model(&models.User{}).
 		Where("email = ?", email).
-		First(&res).
-		Error
+		First(&res)
 
-	if err != nil {
-		return nil, fmt.Errorf("failed to get user by email_center: %w", err)
+	if err.Error != nil {
+		return nil, fmt.Errorf("get detail user failed: %w", err.Error)
 	}
 
 	return &res, nil

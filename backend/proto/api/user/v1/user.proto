@@ -17,6 +17,10 @@ service UserAccountAPI {
     option idempotency_level = NO_SIDE_EFFECTS;
   }
   rpc UserChangePassword (UserChangePasswordRequest) returns (UserChangePasswordResponse) {}
+
+  // login-via-google
+  rpc UserGoogleAuth (UserGoogleAuthRequest) returns (UserGoogleAuthResponse) {}
+  rpc ExchangeGoogleCode (ExchangeGoogleCodeRequest) returns (UserGoogleAuthResponse) {}
 }
 
 message UserSignupRequest {
@@ -138,4 +142,22 @@ message UserChangePasswordRequest {
 
 message UserChangePasswordResponse {
   string message = 1;
+}
+
+message ExchangeGoogleCodeRequest {
+  string code = 1 [(buf.validate.field).string = {
+    min_len : 1
+  }];
+}
+
+message UserGoogleAuthRequest {
+  string access_token = 1 [(buf.validate.field).string = {
+    min_len : 1
+  }];
+}
+
+message UserGoogleAuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp expires_at = 3;
 }

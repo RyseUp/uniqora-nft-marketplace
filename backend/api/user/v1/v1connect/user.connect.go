@@ -60,6 +60,12 @@ const (
 	// UserAccountAPIUserChangePasswordProcedure is the fully-qualified name of the UserAccountAPI's
 	// UserChangePassword RPC.
 	UserAccountAPIUserChangePasswordProcedure = "/api.user.v1.UserAccountAPI/UserChangePassword"
+	// UserAccountAPIUserGoogleAuthProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserGoogleAuth RPC.
+	UserAccountAPIUserGoogleAuthProcedure = "/api.user.v1.UserAccountAPI/UserGoogleAuth"
+	// UserAccountAPIExchangeGoogleCodeProcedure is the fully-qualified name of the UserAccountAPI's
+	// ExchangeGoogleCode RPC.
+	UserAccountAPIExchangeGoogleCodeProcedure = "/api.user.v1.UserAccountAPI/ExchangeGoogleCode"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
@@ -73,6 +79,9 @@ type UserAccountAPIClient interface {
 	UserUpdateProfile(context.Context, *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error)
 	UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error)
 	UserChangePassword(context.Context, *connect_go.Request[v1.UserChangePasswordRequest]) (*connect_go.Response[v1.UserChangePasswordResponse], error)
+	// login-via-google
+	UserGoogleAuth(context.Context, *connect_go.Request[v1.UserGoogleAuthRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
+	ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -131,6 +140,16 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			baseURL+UserAccountAPIUserChangePasswordProcedure,
 			opts...,
 		),
+		userGoogleAuth: connect_go.NewClient[v1.UserGoogleAuthRequest, v1.UserGoogleAuthResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserGoogleAuthProcedure,
+			opts...,
+		),
+		exchangeGoogleCode: connect_go.NewClient[v1.ExchangeGoogleCodeRequest, v1.UserGoogleAuthResponse](
+			httpClient,
+			baseURL+UserAccountAPIExchangeGoogleCodeProcedure,
+			opts...,
+		),
 	}
 }
 
@@ -145,6 +164,8 @@ type userAccountAPIClient struct {
 	userUpdateProfile  *connect_go.Client[v1.UserUpdateProfileRequest, v1.UserUpdateProfileResponse]
 	userGetSelfProfile *connect_go.Client[v1.UserGetSelfProfileRequest, v1.UserGetSelfProfileResponse]
 	userChangePassword *connect_go.Client[v1.UserChangePasswordRequest, v1.UserChangePasswordResponse]
+	userGoogleAuth     *connect_go.Client[v1.UserGoogleAuthRequest, v1.UserGoogleAuthResponse]
+	exchangeGoogleCode *connect_go.Client[v1.ExchangeGoogleCodeRequest, v1.UserGoogleAuthResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -192,6 +213,16 @@ func (c *userAccountAPIClient) UserChangePassword(ctx context.Context, req *conn
 	return c.userChangePassword.CallUnary(ctx, req)
 }
 
+// UserGoogleAuth calls api.user.v1.UserAccountAPI.UserGoogleAuth.
+func (c *userAccountAPIClient) UserGoogleAuth(ctx context.Context, req *connect_go.Request[v1.UserGoogleAuthRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error) {
+	return c.userGoogleAuth.CallUnary(ctx, req)
+}
+
+// ExchangeGoogleCode calls api.user.v1.UserAccountAPI.ExchangeGoogleCode.
+func (c *userAccountAPIClient) ExchangeGoogleCode(ctx context.Context, req *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error) {
+	return c.exchangeGoogleCode.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
@@ -203,6 +234,9 @@ type UserAccountAPIHandler interface {
 	UserUpdateProfile(context.Context, *connect_go.Request[v1.UserUpdateProfileRequest]) (*connect_go.Response[v1.UserUpdateProfileResponse], error)
 	UserGetSelfProfile(context.Context, *connect_go.Request[v1.UserGetSelfProfileRequest]) (*connect_go.Response[v1.UserGetSelfProfileResponse], error)
 	UserChangePassword(context.Context, *connect_go.Request[v1.UserChangePasswordRequest]) (*connect_go.Response[v1.UserChangePasswordResponse], error)
+	// login-via-google
+	UserGoogleAuth(context.Context, *connect_go.Request[v1.UserGoogleAuthRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
+	ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -257,6 +291,16 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		svc.UserChangePassword,
 		opts...,
 	)
+	userAccountAPIUserGoogleAuthHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserGoogleAuthProcedure,
+		svc.UserGoogleAuth,
+		opts...,
+	)
+	userAccountAPIExchangeGoogleCodeHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIExchangeGoogleCodeProcedure,
+		svc.ExchangeGoogleCode,
+		opts...,
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
@@ -277,6 +321,10 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 			userAccountAPIUserGetSelfProfileHandler.ServeHTTP(w, r)
 		case UserAccountAPIUserChangePasswordProcedure:
 			userAccountAPIUserChangePasswordHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserGoogleAuthProcedure:
+			userAccountAPIUserGoogleAuthHandler.ServeHTTP(w, r)
+		case UserAccountAPIExchangeGoogleCodeProcedure:
+			userAccountAPIExchangeGoogleCodeHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -320,4 +368,12 @@ func (UnimplementedUserAccountAPIHandler) UserGetSelfProfile(context.Context, *c
 
 func (UnimplementedUserAccountAPIHandler) UserChangePassword(context.Context, *connect_go.Request[v1.UserChangePasswordRequest]) (*connect_go.Response[v1.UserChangePasswordResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserChangePassword is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserGoogleAuth(context.Context, *connect_go.Request[v1.UserGoogleAuthRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserGoogleAuth is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.ExchangeGoogleCode is not implemented"))
 }
