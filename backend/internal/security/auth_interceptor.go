@@ -25,6 +25,7 @@ func AuthInterceptor(secretKey string) connect.UnaryInterceptorFunc {
 		v1.UserAccountAPI_UserSignup_FullMethodName:         true,
 		v1.UserAccountAPI_UserGoogleAuth_FullMethodName:     true,
 		v1.UserAccountAPI_ExchangeGoogleCode_FullMethodName: true,
+		v1.UserAccountAPI_UserMetaMaskAuth_FullMethodName:   true,
 	}
 
 	return connect.UnaryInterceptorFunc(func(next connect.UnaryFunc) connect.UnaryFunc {
