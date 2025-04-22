@@ -13,6 +13,7 @@ type User interface {
 	GetUserByUserID(ctx context.Context, userID string) (*models.User, error)
 	UpdateUserProfile(ctx context.Context, user *models.User) error
 	UpdateUserPasswordByUserID(ctx context.Context, userID, newPassword string) error
+	GetUserByWalletAddress(ctx context.Context, walletAddress string) (*models.User, error)
 	UserRegister
 	UserSession
 }
@@ -90,4 +91,19 @@ func (s *UserStore) UpdateUserPasswordByUserID(ctx context.Context, userID, newP
 	}
 
 	return nil
+}
+
+func (s *UserStore) GetUserByWalletAddress(ctx context.Context, walletAddress string) (*models.User, error) {
+	var res models.User
+	err := s.db.WithContext(ctx).
+		Model(&models.User{}).
+		Where("wallet_address = ?", walletAddress).
+		First(&res).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &res, nil
 }

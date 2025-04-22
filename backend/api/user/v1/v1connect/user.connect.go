@@ -66,6 +66,9 @@ const (
 	// UserAccountAPIExchangeGoogleCodeProcedure is the fully-qualified name of the UserAccountAPI's
 	// ExchangeGoogleCode RPC.
 	UserAccountAPIExchangeGoogleCodeProcedure = "/api.user.v1.UserAccountAPI/ExchangeGoogleCode"
+	// UserAccountAPIUserMetaMaskAuthProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserMetaMaskAuth RPC.
+	UserAccountAPIUserMetaMaskAuthProcedure = "/api.user.v1.UserAccountAPI/UserMetaMaskAuth"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
@@ -82,6 +85,8 @@ type UserAccountAPIClient interface {
 	// login-via-google
 	UserGoogleAuth(context.Context, *connect_go.Request[v1.UserGoogleAuthRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
 	ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
+	// login-via-metamask
+	UserMetaMaskAuth(context.Context, *connect_go.Request[v1.UserMetaMaskAuthRequest]) (*connect_go.Response[v1.UserMetaMaskAuthResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -150,6 +155,11 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			baseURL+UserAccountAPIExchangeGoogleCodeProcedure,
 			opts...,
 		),
+		userMetaMaskAuth: connect_go.NewClient[v1.UserMetaMaskAuthRequest, v1.UserMetaMaskAuthResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserMetaMaskAuthProcedure,
+			opts...,
+		),
 	}
 }
 
@@ -166,6 +176,7 @@ type userAccountAPIClient struct {
 	userChangePassword *connect_go.Client[v1.UserChangePasswordRequest, v1.UserChangePasswordResponse]
 	userGoogleAuth     *connect_go.Client[v1.UserGoogleAuthRequest, v1.UserGoogleAuthResponse]
 	exchangeGoogleCode *connect_go.Client[v1.ExchangeGoogleCodeRequest, v1.UserGoogleAuthResponse]
+	userMetaMaskAuth   *connect_go.Client[v1.UserMetaMaskAuthRequest, v1.UserMetaMaskAuthResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -223,6 +234,11 @@ func (c *userAccountAPIClient) ExchangeGoogleCode(ctx context.Context, req *conn
 	return c.exchangeGoogleCode.CallUnary(ctx, req)
 }
 
+// UserMetaMaskAuth calls api.user.v1.UserAccountAPI.UserMetaMaskAuth.
+func (c *userAccountAPIClient) UserMetaMaskAuth(ctx context.Context, req *connect_go.Request[v1.UserMetaMaskAuthRequest]) (*connect_go.Response[v1.UserMetaMaskAuthResponse], error) {
+	return c.userMetaMaskAuth.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
@@ -237,6 +253,8 @@ type UserAccountAPIHandler interface {
 	// login-via-google
 	UserGoogleAuth(context.Context, *connect_go.Request[v1.UserGoogleAuthRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
 	ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
+	// login-via-metamask
+	UserMetaMaskAuth(context.Context, *connect_go.Request[v1.UserMetaMaskAuthRequest]) (*connect_go.Response[v1.UserMetaMaskAuthResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -301,6 +319,11 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		svc.ExchangeGoogleCode,
 		opts...,
 	)
+	userAccountAPIUserMetaMaskAuthHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserMetaMaskAuthProcedure,
+		svc.UserMetaMaskAuth,
+		opts...,
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
@@ -325,6 +348,8 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 			userAccountAPIUserGoogleAuthHandler.ServeHTTP(w, r)
 		case UserAccountAPIExchangeGoogleCodeProcedure:
 			userAccountAPIExchangeGoogleCodeHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserMetaMaskAuthProcedure:
+			userAccountAPIUserMetaMaskAuthHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -376,4 +401,8 @@ func (UnimplementedUserAccountAPIHandler) UserGoogleAuth(context.Context, *conne
 
 func (UnimplementedUserAccountAPIHandler) ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.ExchangeGoogleCode is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserMetaMaskAuth(context.Context, *connect_go.Request[v1.UserMetaMaskAuthRequest]) (*connect_go.Response[v1.UserMetaMaskAuthResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserMetaMaskAuth is not implemented"))
 }

@@ -12,7 +12,7 @@ type User struct {
 	Email         string         `gorm:"type:text;uniqueIndex" json:"email_center"`
 	Password      string         `gorm:"type:text" json:"password"`
 	GoogleID      sql.NullString `gorm:"type:text;uniqueIndex" json:"google_id"`
-	WalletAddress string         `gorm:"type:text" json:"wallet_address"`
+	WalletAddress sql.NullString `gorm:"type:text" json:"wallet_address"`
 	Provider      AuthProvider   `gorm:"type:text" json:"provider"`
 	AvatarURL     string         `gorm:"type:text" json:"avatar_url"`
 	CreatedAt     time.Time      `gorm:"type:timestamp" json:"created_at"`

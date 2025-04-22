@@ -21,6 +21,9 @@ service UserAccountAPI {
   // login-via-google
   rpc UserGoogleAuth (UserGoogleAuthRequest) returns (UserGoogleAuthResponse) {}
   rpc ExchangeGoogleCode (ExchangeGoogleCodeRequest) returns (UserGoogleAuthResponse) {}
+
+  // login-via-metamask
+  rpc UserMetaMaskAuth (UserMetaMaskAuthRequest) returns (UserMetaMaskAuthResponse) {}
 }
 
 message UserSignupRequest {
@@ -157,6 +160,29 @@ message UserGoogleAuthRequest {
 }
 
 message UserGoogleAuthResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+message UserMetaMaskAuthRequest {
+  string wallet_address = 1 [(buf.validate.field).string = {
+    min_len: 42
+    max_len: 42
+    pattern: "^0x[0-9a-fA-F]{40}$"
+  }];
+  string message = 2 [(buf.validate.field).string = {
+    min_len: 1
+    max_len: 255
+  }];
+  string signature = 3 [(buf.validate.field).string = {
+    min_len: 132
+    max_len: 132
+    pattern: "^0x[0-9a-fA-F]{130}$"
+  }];
+}
+
+message UserMetaMaskAuthResponse {
   string access_token = 1;
   string refresh_token = 2;
   google.protobuf.Timestamp expires_at = 3;

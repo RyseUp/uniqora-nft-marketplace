@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="set-up-config-go-oauth">
-      <change afterPath="$PROJECT_DIR$/backend/auth/google.go" afterDir="false" />
+    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="update code folder structure">
+      <change afterPath="$PROJECT_DIR$/backend/internal/security/metamask.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/backend/.env" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config/config.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/config/config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/config/config.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/internal/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/models/user.go" afterDir="false" />
@@ -76,7 +72,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "feat/user-login-via-google-account",
+    "git-widget-placeholder": "feat/user-login-via-metamask",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace/backend",
@@ -137,9 +133,34 @@
     <MESSAGE value="user-resend-sign-up" />
     <MESSAGE value="user-update-and-get-their-profile" />
     <MESSAGE value="set-up-config-go-oauth" />
-    <option name="LAST_COMMIT_MESSAGE" value="set-up-config-go-oauth" />
+    <MESSAGE value="Merge pull request #8 from RyseUp/feat/user-login-via-google-account&#10;&#10;Feat/user login via google account" />
+    <MESSAGE value="update env" />
+    <MESSAGE value="update gitignore" />
+    <MESSAGE value="update code folder structure" />
+    <option name="LAST_COMMIT_MESSAGE" value="update code folder structure" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
+          <line>571</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
+          <line>562</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
+          <line>576</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

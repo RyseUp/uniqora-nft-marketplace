@@ -559,3 +559,63 @@ func (s *UserAPI) UserGoogleAuth(ctx context.Context, c *connect.Request[v1.User
 		ExpiresAt:    timestamppb.New(exp),
 	}), nil
 }
+
+func (s *UserAPI) UserMetaMaskAuth(ctx context.Context, c *connect.Request[v1.UserMetaMaskAuthRequest]) (*connect.Response[v1.UserMetaMaskAuthResponse], error) {
+	var (
+		req           = c.Msg
+		walletAddress = req.GetWalletAddress()
+		message       = req.GetMessage()
+		signature     = req.GetSignature()
+	)
+
+	// verify signature
+	validSignature, err := security.VerifyMetaMaskSignature(walletAddress, message, signature)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("failed to valid signature: %w", err))
+	}
+
+	if !validSignature {
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid signature"))
+	}
+
+	userInfo, err := s.userRepo.GetUserByWalletAddress(ctx, walletAddress)
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		userInfo = &models.User{
+			UserID:        uuid.New().String(),
+			UserName:      "User_" + walletAddress[2:8],
+			WalletAddress: sql.NullString{String: walletAddress, Valid: true},
+			Provider:      models.AuthProviderWallet,
+		}
+		if err := s.userRepo.CreateNewUser(ctx, userInfo); err != nil {
+			return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create new user: %w", err))
+		}
+	} else if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get user: %w", err))
+	}
+
+	accessToken, exp, err := security.GenerateJWT(userInfo.UserID, s.cfg.JWT.SecretKey)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create accessToken: %w", err))
+	}
+
+	sessionID := uuid.New().String()
+	refreshToken, _, err := security.GenerateRefreshToken(sessionID, s.cfg.JWT.SecretKey)
+
+	newSession := &models.UserSession{
+		SessionID:    sessionID,
+		UserID:       userInfo.UserID,
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		UserAgent:    c.Header().Get("User-Agent"),
+		ExpiresAt:    time.Now().Add(7 * 24 * time.Hour),
+	}
+	if err := s.userRepo.CreateUserSession(ctx, newSession); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create user session: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserMetaMaskAuthResponse{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		ExpiresAt:    timestamppb.New(exp),
+	}), nil
+}
