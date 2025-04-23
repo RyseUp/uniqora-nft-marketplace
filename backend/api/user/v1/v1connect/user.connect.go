@@ -69,6 +69,9 @@ const (
 	// UserAccountAPIUserMetaMaskAuthProcedure is the fully-qualified name of the UserAccountAPI's
 	// UserMetaMaskAuth RPC.
 	UserAccountAPIUserMetaMaskAuthProcedure = "/api.user.v1.UserAccountAPI/UserMetaMaskAuth"
+	// UserAccountAPIUserGetMetaMaskNonceProcedure is the fully-qualified name of the UserAccountAPI's
+	// UserGetMetaMaskNonce RPC.
+	UserAccountAPIUserGetMetaMaskNonceProcedure = "/api.user.v1.UserAccountAPI/UserGetMetaMaskNonce"
 )
 
 // UserAccountAPIClient is a client for the api.user.v1.UserAccountAPI service.
@@ -87,6 +90,7 @@ type UserAccountAPIClient interface {
 	ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
 	// login-via-metamask
 	UserMetaMaskAuth(context.Context, *connect_go.Request[v1.UserMetaMaskAuthRequest]) (*connect_go.Response[v1.UserMetaMaskAuthResponse], error)
+	UserGetMetaMaskNonce(context.Context, *connect_go.Request[v1.UserGetMetaMaskNonceRequest]) (*connect_go.Response[v1.UserGetMetaMaskNonceResponse], error)
 }
 
 // NewUserAccountAPIClient constructs a client for the api.user.v1.UserAccountAPI service. By
@@ -160,23 +164,29 @@ func NewUserAccountAPIClient(httpClient connect_go.HTTPClient, baseURL string, o
 			baseURL+UserAccountAPIUserMetaMaskAuthProcedure,
 			opts...,
 		),
+		userGetMetaMaskNonce: connect_go.NewClient[v1.UserGetMetaMaskNonceRequest, v1.UserGetMetaMaskNonceResponse](
+			httpClient,
+			baseURL+UserAccountAPIUserGetMetaMaskNonceProcedure,
+			opts...,
+		),
 	}
 }
 
 // userAccountAPIClient implements UserAccountAPIClient.
 type userAccountAPIClient struct {
-	userSignup         *connect_go.Client[v1.UserSignupRequest, v1.UserSignupResponse]
-	userResendSignup   *connect_go.Client[v1.UserResendSignupRequest, v1.UserResendSignupResponse]
-	userCompleteSignup *connect_go.Client[v1.UserCompleteSignupRequest, v1.UserCompleteSignupResponse]
-	userLogin          *connect_go.Client[v1.UserLoginRequest, v1.UserLoginResponse]
-	userRefreshToken   *connect_go.Client[v1.UserRefreshTokenRequest, v1.UserRefreshTokenResponse]
-	userLogout         *connect_go.Client[v1.UserLogoutRequest, v1.UserLogoutResponse]
-	userUpdateProfile  *connect_go.Client[v1.UserUpdateProfileRequest, v1.UserUpdateProfileResponse]
-	userGetSelfProfile *connect_go.Client[v1.UserGetSelfProfileRequest, v1.UserGetSelfProfileResponse]
-	userChangePassword *connect_go.Client[v1.UserChangePasswordRequest, v1.UserChangePasswordResponse]
-	userGoogleAuth     *connect_go.Client[v1.UserGoogleAuthRequest, v1.UserGoogleAuthResponse]
-	exchangeGoogleCode *connect_go.Client[v1.ExchangeGoogleCodeRequest, v1.UserGoogleAuthResponse]
-	userMetaMaskAuth   *connect_go.Client[v1.UserMetaMaskAuthRequest, v1.UserMetaMaskAuthResponse]
+	userSignup           *connect_go.Client[v1.UserSignupRequest, v1.UserSignupResponse]
+	userResendSignup     *connect_go.Client[v1.UserResendSignupRequest, v1.UserResendSignupResponse]
+	userCompleteSignup   *connect_go.Client[v1.UserCompleteSignupRequest, v1.UserCompleteSignupResponse]
+	userLogin            *connect_go.Client[v1.UserLoginRequest, v1.UserLoginResponse]
+	userRefreshToken     *connect_go.Client[v1.UserRefreshTokenRequest, v1.UserRefreshTokenResponse]
+	userLogout           *connect_go.Client[v1.UserLogoutRequest, v1.UserLogoutResponse]
+	userUpdateProfile    *connect_go.Client[v1.UserUpdateProfileRequest, v1.UserUpdateProfileResponse]
+	userGetSelfProfile   *connect_go.Client[v1.UserGetSelfProfileRequest, v1.UserGetSelfProfileResponse]
+	userChangePassword   *connect_go.Client[v1.UserChangePasswordRequest, v1.UserChangePasswordResponse]
+	userGoogleAuth       *connect_go.Client[v1.UserGoogleAuthRequest, v1.UserGoogleAuthResponse]
+	exchangeGoogleCode   *connect_go.Client[v1.ExchangeGoogleCodeRequest, v1.UserGoogleAuthResponse]
+	userMetaMaskAuth     *connect_go.Client[v1.UserMetaMaskAuthRequest, v1.UserMetaMaskAuthResponse]
+	userGetMetaMaskNonce *connect_go.Client[v1.UserGetMetaMaskNonceRequest, v1.UserGetMetaMaskNonceResponse]
 }
 
 // UserSignup calls api.user.v1.UserAccountAPI.UserSignup.
@@ -239,6 +249,11 @@ func (c *userAccountAPIClient) UserMetaMaskAuth(ctx context.Context, req *connec
 	return c.userMetaMaskAuth.CallUnary(ctx, req)
 }
 
+// UserGetMetaMaskNonce calls api.user.v1.UserAccountAPI.UserGetMetaMaskNonce.
+func (c *userAccountAPIClient) UserGetMetaMaskNonce(ctx context.Context, req *connect_go.Request[v1.UserGetMetaMaskNonceRequest]) (*connect_go.Response[v1.UserGetMetaMaskNonceResponse], error) {
+	return c.userGetMetaMaskNonce.CallUnary(ctx, req)
+}
+
 // UserAccountAPIHandler is an implementation of the api.user.v1.UserAccountAPI service.
 type UserAccountAPIHandler interface {
 	UserSignup(context.Context, *connect_go.Request[v1.UserSignupRequest]) (*connect_go.Response[v1.UserSignupResponse], error)
@@ -255,6 +270,7 @@ type UserAccountAPIHandler interface {
 	ExchangeGoogleCode(context.Context, *connect_go.Request[v1.ExchangeGoogleCodeRequest]) (*connect_go.Response[v1.UserGoogleAuthResponse], error)
 	// login-via-metamask
 	UserMetaMaskAuth(context.Context, *connect_go.Request[v1.UserMetaMaskAuthRequest]) (*connect_go.Response[v1.UserMetaMaskAuthResponse], error)
+	UserGetMetaMaskNonce(context.Context, *connect_go.Request[v1.UserGetMetaMaskNonceRequest]) (*connect_go.Response[v1.UserGetMetaMaskNonceResponse], error)
 }
 
 // NewUserAccountAPIHandler builds an HTTP handler from the service implementation. It returns the
@@ -324,6 +340,11 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 		svc.UserMetaMaskAuth,
 		opts...,
 	)
+	userAccountAPIUserGetMetaMaskNonceHandler := connect_go.NewUnaryHandler(
+		UserAccountAPIUserGetMetaMaskNonceProcedure,
+		svc.UserGetMetaMaskNonce,
+		opts...,
+	)
 	return "/api.user.v1.UserAccountAPI/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case UserAccountAPIUserSignupProcedure:
@@ -350,6 +371,8 @@ func NewUserAccountAPIHandler(svc UserAccountAPIHandler, opts ...connect_go.Hand
 			userAccountAPIExchangeGoogleCodeHandler.ServeHTTP(w, r)
 		case UserAccountAPIUserMetaMaskAuthProcedure:
 			userAccountAPIUserMetaMaskAuthHandler.ServeHTTP(w, r)
+		case UserAccountAPIUserGetMetaMaskNonceProcedure:
+			userAccountAPIUserGetMetaMaskNonceHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -405,4 +428,8 @@ func (UnimplementedUserAccountAPIHandler) ExchangeGoogleCode(context.Context, *c
 
 func (UnimplementedUserAccountAPIHandler) UserMetaMaskAuth(context.Context, *connect_go.Request[v1.UserMetaMaskAuthRequest]) (*connect_go.Response[v1.UserMetaMaskAuthResponse], error) {
 	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserMetaMaskAuth is not implemented"))
+}
+
+func (UnimplementedUserAccountAPIHandler) UserGetMetaMaskNonce(context.Context, *connect_go.Request[v1.UserGetMetaMaskNonceRequest]) (*connect_go.Response[v1.UserGetMetaMaskNonceResponse], error) {
+	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("api.user.v1.UserAccountAPI.UserGetMetaMaskNonce is not implemented"))
 }

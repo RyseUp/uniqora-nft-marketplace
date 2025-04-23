@@ -46,3 +46,15 @@ type UserSession struct {
 func (UserSession) TableName() string {
 	return "user_sessions"
 }
+
+type WalletNonce struct {
+	WalletAddress string    `gorm:"type:text" json:"wallet_address"`
+	Nonce         string    `gorm:"primaryKey; type:text" json:"nonce"`
+	ExpiredAt     time.Time `gorm:"type:timestamp; not null" json:"expired_at"`
+	Used          bool      `gorm:"type:bool;default:false" json:"used"`
+	Message       string    `gorm:"type:text" json:"message"`
+}
+
+func (WalletNonce) TableName() string {
+	return "wallet_nonce"
+}

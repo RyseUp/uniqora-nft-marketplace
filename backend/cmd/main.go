@@ -24,6 +24,7 @@ func main() {
 		&models.User{},
 		&models.UserRegister{},
 		&models.UserSession{},
+		&models.WalletNonce{},
 	)
 
 	if err != nil {
@@ -52,14 +53,20 @@ func main() {
 		security.SetAccessTokenCookieInterceptor(),
 	)
 
+	// init repo
+	var (
+		userRepo        = repositories.NewUserStore(db)
+		walletNonceRepo = repositories.NewWalletNonce(db)
+	)
+
 	// user-service-setting
 	publisher, err := mq.NewPublisher(cfg.RabbitMQ.URL, cfg.RabbitMQ.EmailQueue)
 	if err != nil {
 		log.Fatalf("rabbitmq: %v", err)
 	}
 	emailPublisher := mq.NewEmailPublisher(publisher, cfg.RabbitMQ.EmailQueue)
-	userRepo := repositories.NewUserStore(db)
-	userService := services.NewUserAPI(cfg, userRepo, emailPublisher, googleConfig, logger)
+
+	userService := services.NewUserAPI(cfg, userRepo, walletNonceRepo, emailPublisher, googleConfig, logger)
 
 	// authentication-user-service
 	userPath, userHandler := user.NewUserAccountAPIHandler(userService, interceptor)

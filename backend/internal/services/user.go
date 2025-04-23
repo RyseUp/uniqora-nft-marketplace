@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -32,26 +33,29 @@ var (
 )
 
 type UserAPI struct {
-	cfg          *config.Config
-	userRepo     repositories.User
-	publisher    *mq.EmailPublisher
-	googleClient *oauth2.Config
-	logger       *zap.Logger
+	cfg             *config.Config
+	userRepo        repositories.User
+	walletNonceRepo repositories.WalletNonce
+	publisher       *mq.EmailPublisher
+	googleClient    *oauth2.Config
+	logger          *zap.Logger
 }
 
 func NewUserAPI(
 	cfg *config.Config,
 	userRepo repositories.User,
+	walletNonceRepo repositories.WalletNonce,
 	publisher *mq.EmailPublisher,
 	googleClient *oauth2.Config,
 	logger *zap.Logger,
 ) *UserAPI {
 	return &UserAPI{
-		cfg:          cfg,
-		userRepo:     userRepo,
-		publisher:    publisher,
-		googleClient: googleClient,
-		logger:       logger,
+		cfg:             cfg,
+		userRepo:        userRepo,
+		walletNonceRepo: walletNonceRepo,
+		publisher:       publisher,
+		googleClient:    googleClient,
+		logger:          logger,
 	}
 }
 
@@ -566,9 +570,39 @@ func (s *UserAPI) UserMetaMaskAuth(ctx context.Context, c *connect.Request[v1.Us
 		walletAddress = req.GetWalletAddress()
 		message       = req.GetMessage()
 		signature     = req.GetSignature()
+		nonce         = req.GetNonce()
 	)
 
+	// verify nonce
+	nonceRecord, err := s.walletNonceRepo.UserGetNonceByNonce(ctx, nonce)
+	switch {
+	case errors.Is(err, gorm.ErrRecordNotFound):
+		return nil, connect.NewError(connect.CodeUnavailable, fmt.Errorf("invalid nonce: %w", err))
+	case err != nil:
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get nonce: %w", err))
+	}
+
+	switch {
+	case nonceRecord.Used:
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("nonce already used"))
+	case time.Now().After(nonceRecord.ExpiredAt):
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("nonce expired"))
+	case nonceRecord.WalletAddress != walletAddress:
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("nonce wallet address mismatch"))
+	}
+
 	// verify signature
+	expectedMessage := nonceRecord.Message
+	if expectedMessage != message {
+		s.logger.Info("Checking MetaMask login message",
+			zap.String("expected", expectedMessage),
+			zap.String("received", message),
+			zap.Time("expiresAt", nonceRecord.ExpiredAt),
+			zap.String("nonce", nonce),
+		)
+		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid message"))
+	}
+
 	validSignature, err := security.VerifyMetaMaskSignature(walletAddress, message, signature)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("failed to valid signature: %w", err))
@@ -576,6 +610,11 @@ func (s *UserAPI) UserMetaMaskAuth(ctx context.Context, c *connect.Request[v1.Us
 
 	if !validSignature {
 		return nil, connect.NewError(connect.CodeUnauthenticated, fmt.Errorf("invalid signature"))
+	}
+
+	// mark nonce to used
+	if err := s.walletNonceRepo.MarkNonceUsed(ctx, walletAddress, nonce); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to mark nonce used: %w", err))
 	}
 
 	userInfo, err := s.userRepo.GetUserByWalletAddress(ctx, walletAddress)
@@ -617,5 +656,44 @@ func (s *UserAPI) UserMetaMaskAuth(ctx context.Context, c *connect.Request[v1.Us
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
 		ExpiresAt:    timestamppb.New(exp),
+	}), nil
+}
+
+func (s *UserAPI) UserGetMetaMaskNonce(ctx context.Context, c *connect.Request[v1.UserGetMetaMaskNonceRequest]) (*connect.Response[v1.UserGetMetaMaskNonceResponse], error) {
+	var (
+		req           = c.Msg
+		walletAddress = req.GetWalletAddress()
+	)
+
+	// generate random nonce
+	nonceBytes := make([]byte, 16)
+	if _, err := rand.Read(nonceBytes); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to generate nonce: %w", err))
+	}
+	nonce := hex.EncodeToString(nonceBytes)
+
+	expiresAt := time.Now().Add(5 * time.Minute).UTC()
+	msg := fmt.Sprintf(
+		"Sign to login to Uniqora NFT Marketplace at %s:%s",
+		expiresAt.Format(time.RFC3339),
+		nonce,
+	)
+
+	// stored nonce
+	newNonce := &models.WalletNonce{
+		WalletAddress: walletAddress,
+		Nonce:         nonce,
+		ExpiredAt:     expiresAt,
+		Used:          false,
+		Message:       msg,
+	}
+	if err := s.walletNonceRepo.CreateNewNonce(ctx, newNonce); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to create new nonce: %w", err))
+	}
+
+	return connect.NewResponse(&v1.UserGetMetaMaskNonceResponse{
+		Nonce:     nonce,
+		ExpiresAt: timestamppb.New(newNonce.ExpiredAt.UTC()),
+		Message:   newNonce.Message,
 	}), nil
 }

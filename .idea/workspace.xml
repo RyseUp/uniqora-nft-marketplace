@@ -5,15 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="update code folder structure">
-      <change afterPath="$PROJECT_DIR$/backend/internal/security/metamask.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/internal/repositories/wallet_nonce.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/backend/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/internal/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/repositories/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/repositories/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/internal/services/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/services/user.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" afterDir="false" />
@@ -72,7 +70,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "feat/user-login-via-metamask",
+    "git-widget-placeholder": "feat/prevent-replay-attacks-in-login-with-metamask",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace/backend",
@@ -147,18 +145,8 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DlvLineBreakpoint">
           <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
-          <line>571</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
-          <line>562</line>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
-          <line>576</line>
-          <option name="timeStamp" value="5" />
+          <line>594</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
