@@ -19,18 +19,19 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserAccountAPI_UserSignup_FullMethodName         = "/api.user.v1.UserAccountAPI/UserSignup"
-	UserAccountAPI_UserResendSignup_FullMethodName   = "/api.user.v1.UserAccountAPI/UserResendSignup"
-	UserAccountAPI_UserCompleteSignup_FullMethodName = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
-	UserAccountAPI_UserLogin_FullMethodName          = "/api.user.v1.UserAccountAPI/UserLogin"
-	UserAccountAPI_UserRefreshToken_FullMethodName   = "/api.user.v1.UserAccountAPI/UserRefreshToken"
-	UserAccountAPI_UserLogout_FullMethodName         = "/api.user.v1.UserAccountAPI/UserLogout"
-	UserAccountAPI_UserUpdateProfile_FullMethodName  = "/api.user.v1.UserAccountAPI/UserUpdateProfile"
-	UserAccountAPI_UserGetSelfProfile_FullMethodName = "/api.user.v1.UserAccountAPI/UserGetSelfProfile"
-	UserAccountAPI_UserChangePassword_FullMethodName = "/api.user.v1.UserAccountAPI/UserChangePassword"
-	UserAccountAPI_UserGoogleAuth_FullMethodName     = "/api.user.v1.UserAccountAPI/UserGoogleAuth"
-	UserAccountAPI_ExchangeGoogleCode_FullMethodName = "/api.user.v1.UserAccountAPI/ExchangeGoogleCode"
-	UserAccountAPI_UserMetaMaskAuth_FullMethodName   = "/api.user.v1.UserAccountAPI/UserMetaMaskAuth"
+	UserAccountAPI_UserSignup_FullMethodName           = "/api.user.v1.UserAccountAPI/UserSignup"
+	UserAccountAPI_UserResendSignup_FullMethodName     = "/api.user.v1.UserAccountAPI/UserResendSignup"
+	UserAccountAPI_UserCompleteSignup_FullMethodName   = "/api.user.v1.UserAccountAPI/UserCompleteSignup"
+	UserAccountAPI_UserLogin_FullMethodName            = "/api.user.v1.UserAccountAPI/UserLogin"
+	UserAccountAPI_UserRefreshToken_FullMethodName     = "/api.user.v1.UserAccountAPI/UserRefreshToken"
+	UserAccountAPI_UserLogout_FullMethodName           = "/api.user.v1.UserAccountAPI/UserLogout"
+	UserAccountAPI_UserUpdateProfile_FullMethodName    = "/api.user.v1.UserAccountAPI/UserUpdateProfile"
+	UserAccountAPI_UserGetSelfProfile_FullMethodName   = "/api.user.v1.UserAccountAPI/UserGetSelfProfile"
+	UserAccountAPI_UserChangePassword_FullMethodName   = "/api.user.v1.UserAccountAPI/UserChangePassword"
+	UserAccountAPI_UserGoogleAuth_FullMethodName       = "/api.user.v1.UserAccountAPI/UserGoogleAuth"
+	UserAccountAPI_ExchangeGoogleCode_FullMethodName   = "/api.user.v1.UserAccountAPI/ExchangeGoogleCode"
+	UserAccountAPI_UserMetaMaskAuth_FullMethodName     = "/api.user.v1.UserAccountAPI/UserMetaMaskAuth"
+	UserAccountAPI_UserGetMetaMaskNonce_FullMethodName = "/api.user.v1.UserAccountAPI/UserGetMetaMaskNonce"
 )
 
 // UserAccountAPIClient is the client API for UserAccountAPI service.
@@ -51,6 +52,7 @@ type UserAccountAPIClient interface {
 	ExchangeGoogleCode(ctx context.Context, in *ExchangeGoogleCodeRequest, opts ...grpc.CallOption) (*UserGoogleAuthResponse, error)
 	// login-via-metamask
 	UserMetaMaskAuth(ctx context.Context, in *UserMetaMaskAuthRequest, opts ...grpc.CallOption) (*UserMetaMaskAuthResponse, error)
+	UserGetMetaMaskNonce(ctx context.Context, in *UserGetMetaMaskNonceRequest, opts ...grpc.CallOption) (*UserGetMetaMaskNonceResponse, error)
 }
 
 type userAccountAPIClient struct {
@@ -181,6 +183,16 @@ func (c *userAccountAPIClient) UserMetaMaskAuth(ctx context.Context, in *UserMet
 	return out, nil
 }
 
+func (c *userAccountAPIClient) UserGetMetaMaskNonce(ctx context.Context, in *UserGetMetaMaskNonceRequest, opts ...grpc.CallOption) (*UserGetMetaMaskNonceResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserGetMetaMaskNonceResponse)
+	err := c.cc.Invoke(ctx, UserAccountAPI_UserGetMetaMaskNonce_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserAccountAPIServer is the server API for UserAccountAPI service.
 // All implementations must embed UnimplementedUserAccountAPIServer
 // for forward compatibility.
@@ -199,6 +211,7 @@ type UserAccountAPIServer interface {
 	ExchangeGoogleCode(context.Context, *ExchangeGoogleCodeRequest) (*UserGoogleAuthResponse, error)
 	// login-via-metamask
 	UserMetaMaskAuth(context.Context, *UserMetaMaskAuthRequest) (*UserMetaMaskAuthResponse, error)
+	UserGetMetaMaskNonce(context.Context, *UserGetMetaMaskNonceRequest) (*UserGetMetaMaskNonceResponse, error)
 	mustEmbedUnimplementedUserAccountAPIServer()
 }
 
@@ -244,6 +257,9 @@ func (UnimplementedUserAccountAPIServer) ExchangeGoogleCode(context.Context, *Ex
 }
 func (UnimplementedUserAccountAPIServer) UserMetaMaskAuth(context.Context, *UserMetaMaskAuthRequest) (*UserMetaMaskAuthResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserMetaMaskAuth not implemented")
+}
+func (UnimplementedUserAccountAPIServer) UserGetMetaMaskNonce(context.Context, *UserGetMetaMaskNonceRequest) (*UserGetMetaMaskNonceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserGetMetaMaskNonce not implemented")
 }
 func (UnimplementedUserAccountAPIServer) mustEmbedUnimplementedUserAccountAPIServer() {}
 func (UnimplementedUserAccountAPIServer) testEmbeddedByValue()                        {}
@@ -482,6 +498,24 @@ func _UserAccountAPI_UserMetaMaskAuth_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserAccountAPI_UserGetMetaMaskNonce_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserGetMetaMaskNonceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserAccountAPIServer).UserGetMetaMaskNonce(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserAccountAPI_UserGetMetaMaskNonce_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserAccountAPIServer).UserGetMetaMaskNonce(ctx, req.(*UserGetMetaMaskNonceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserAccountAPI_ServiceDesc is the grpc.ServiceDesc for UserAccountAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -536,6 +570,10 @@ var UserAccountAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserMetaMaskAuth",
 			Handler:    _UserAccountAPI_UserMetaMaskAuth_Handler,
+		},
+		{
+			MethodName: "UserGetMetaMaskNonce",
+			Handler:    _UserAccountAPI_UserGetMetaMaskNonce_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
