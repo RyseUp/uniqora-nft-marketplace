@@ -5,16 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="update code folder structure">
-      <change afterPath="$PROJECT_DIR$/backend/internal/repositories/wallet_nonce.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/services/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/services/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="feat/prevent-replay-attacks-in-login-with-metamask" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -65,12 +60,13 @@
     "DefaultGoTemplateProperty": "Go File",
     "DefaultHtmlFileTemplate": "HTML File",
     "Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd.executor": "Run",
+    "Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/cmd.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "feat/prevent-replay-attacks-in-login-with-metamask",
+    "git-widget-placeholder": "restructure-backend",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace/backend",
@@ -97,9 +93,19 @@
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+    <configuration name="go build github.com/RyseUp/uniqora-nft-marketplace/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true">
       <module name="uniqora-nft-marketplace" />
-      <working_directory value="$PROJECT_DIR$/backend" />
+      <working_directory value="$PROJECT_DIR$" />
+      <EXTENSION ID="net.ashald.envfile">
+        <option name="IS_ENABLED" value="false" />
+        <option name="IS_SUBST" value="false" />
+        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+        <option name="IS_IGNORE_MISSING_FILES" value="false" />
+        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+        <ENTRIES>
+          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        </ENTRIES>
+      </EXTENSION>
       <kind value="PACKAGE" />
       <package value="github.com/RyseUp/uniqora-nft-marketplace/backend/cmd" />
       <directory value="$PROJECT_DIR$" />
@@ -108,9 +114,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd" />
-        <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd" />
-        <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd" />
+        <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/cmd" />
+        <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/cmd" />
+        <item itemvalue="Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/cmd" />
       </list>
     </recent_temporary>
   </component>
@@ -135,7 +141,9 @@
     <MESSAGE value="update env" />
     <MESSAGE value="update gitignore" />
     <MESSAGE value="update code folder structure" />
-    <option name="LAST_COMMIT_MESSAGE" value="update code folder structure" />
+    <MESSAGE value="chore: remove ai and frontend folders for backend-only structure" />
+    <MESSAGE value="user create metamask nonce to prevent replay attacks in login with metamask" />
+    <option name="LAST_COMMIT_MESSAGE" value="user create metamask nonce to prevent replay attacks in login with metamask" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
@@ -147,6 +155,16 @@
           <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
           <line>594</line>
           <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cmd/main.go</url>
+          <line>20</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/cmd/main.go</url>
+          <line>22</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

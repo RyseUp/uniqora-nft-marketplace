@@ -21,7 +21,13 @@
 go.work
 go.work.sum
 
-# env file
-frontend/.env
-backend/.env
+# Environment config
+.env
 
+# IDE config (optional, good for team environments)
+.idea/
+.vscode/
+
+# Docker named volumes (optional cleanup)
+postgres_data/
+rabbitmq_data/
