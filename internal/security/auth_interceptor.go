@@ -3,7 +3,7 @@ package security
 import (
 	"context"
 	"errors"
-	v1 "github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1"
+	v1 "github.com/RyseUp/uniqora-nft-marketplace/api/user/v1"
 	"github.com/bufbuild/connect-go"
 	"github.com/golang-jwt/jwt/v5"
 	"strings"

@@ -2,7 +2,7 @@ package auth
 
 import (
 	"fmt"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/config"
+	"github.com/RyseUp/uniqora-nft-marketplace/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )

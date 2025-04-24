@@ -1,6 +1,6 @@
 package email_center
 
-import "github.com/RyseUp/uniqora-nft-marketplace/backend/internal/email_center/types"
+import "github.com/RyseUp/uniqora-nft-marketplace/internal/email_center/types"
 
 type Message struct {
 	Type    types.EmailType   `json:"type"`

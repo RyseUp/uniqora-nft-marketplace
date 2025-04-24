@@ -2,8 +2,8 @@ package email_center
 
 import (
 	"fmt"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/config"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/email_center/template"
+	"github.com/RyseUp/uniqora-nft-marketplace/config"
+	"github.com/RyseUp/uniqora-nft-marketplace/internal/email_center/template"
 	"gopkg.in/gomail.v2"
 	"log"
 )

@@ -2,7 +2,7 @@ package security
 
 import (
 	"context"
-	v1 "github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1"
+	v1 "github.com/RyseUp/uniqora-nft-marketplace/api/user/v1"
 	connect "github.com/bufbuild/connect-go"
 	"net/http"
 )

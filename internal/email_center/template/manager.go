@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"embed"
 	"fmt"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/email_center/types"
+	"github.com/RyseUp/uniqora-nft-marketplace/internal/email_center/types"
 	"path/filepath"
 	"text/template"
 )

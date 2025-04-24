@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/email_center"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/email_center/template"
+	"github.com/RyseUp/uniqora-nft-marketplace/internal/email_center"
+	"github.com/RyseUp/uniqora-nft-marketplace/internal/email_center/template"
 	"log"
 
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/config"
+	"github.com/RyseUp/uniqora-nft-marketplace/config"
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 

@@ -1,4 +1,4 @@
-module github.com/RyseUp/uniqora-nft-marketplace/backend
+module github.com/RyseUp/uniqora-nft-marketplace
 
 go 1.23.4
 

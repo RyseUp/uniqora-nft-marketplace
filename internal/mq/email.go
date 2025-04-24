@@ -2,7 +2,7 @@ package mq
 
 import (
 	"context"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/email_center"
+	"github.com/RyseUp/uniqora-nft-marketplace/internal/email_center"
 )
 
 type EmailPublisher struct {

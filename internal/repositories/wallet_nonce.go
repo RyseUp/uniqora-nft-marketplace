@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	"github.com/RyseUp/uniqora-nft-marketplace/backend/internal/models"
+	"github.com/RyseUp/uniqora-nft-marketplace/internal/models"
 	"gorm.io/gorm"
 )
 
