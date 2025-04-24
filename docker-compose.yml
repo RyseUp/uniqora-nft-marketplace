@@ -1,43 +1,25 @@
+version: '3.8'
+
 services:
   backend:
     build:
-      context: ./backend
+      context: .
       dockerfile: Dockerfile
     container_name: uniqora_backend
     ports:
       - "8080:8080"
     env_file:
-      - frontend/.env
+      - .env
     depends_on:
       - db
       - rabbitmq
 
-  ai_service:
-    build:
-      context: ./ai
-      dockerfile: Dockerfile
-    container_name: uniqora_ai
-    ports:
-      - "5001:5000"
-    depends_on:
-      - rabbitmq
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: uniqora_frontend
-    ports:
-      - "3000:80"
-    depends_on:
-      - backend
-
   db:
-    image: postgres:latest
+    image: postgres:14
     container_name: uniqora_db
     restart: always
     env_file:
-      - frontend/.env
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -52,7 +34,7 @@ services:
     container_name: uniqora_rabbitmq
     restart: always
     env_file:
-      - frontend/.env
+      - .env
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
