@@ -15,7 +15,7 @@ services:
       - rabbitmq
 
   db:
-    image: postgres:14
+    image: postgres:latest
     container_name: uniqora_db
     restart: always
     env_file:

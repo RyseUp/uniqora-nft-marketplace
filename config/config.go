@@ -8,11 +8,10 @@ import (
 )
 
 type Config struct {
-	PostgresSQL string       `mapstructure:"postgres_sql"`
-	Email       EmailConfig  `mapstructure:"email"`
-	RabbitMQ    RabbitConfig `mapstructure:"rabbitmq"`
-	JWT         JWTConfig    `mapstructure:"jwt"`
-	Google      GoogleConfig `mapstructure:"google"`
+	Email    EmailConfig  `mapstructure:"email"`
+	RabbitMQ RabbitConfig `mapstructure:"rabbitmq"`
+	JWT      JWTConfig    `mapstructure:"jwt"`
+	Google   GoogleConfig `mapstructure:"google"`
 }
 
 type EmailConfig struct {
