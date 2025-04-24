@@ -5,16 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="update code folder structure">
-      <change afterPath="$PROJECT_DIR$/backend/internal/repositories/wallet_nonce.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/models/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/internal/services/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/services/user.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/.idea/ai.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/main.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ai/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/index.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +39,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="feat/prevent-replay-attacks-in-login-with-metamask" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -70,7 +74,7 @@
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "git-widget-placeholder": "feat/prevent-replay-attacks-in-login-with-metamask",
+    "git-widget-placeholder": "restructure-backend",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace/backend",

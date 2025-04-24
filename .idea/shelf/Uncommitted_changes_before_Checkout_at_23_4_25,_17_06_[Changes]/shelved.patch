@@ -1,0 +1,64 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"ALL\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"fa11b781-837b-4568-8a1f-916d18362291\" name=\"Changes\" comment=\"update code folder structure\">\n      <change afterPath=\"$PROJECT_DIR$/backend/internal/repositories/wallet_nonce.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/api/user/v1/user.pb.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/api/user/v1/user.pb.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/cmd/main.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/cmd/main.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/internal/models/user.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/internal/models/user.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/internal/security/auth_interceptor.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/internal/security/auth_interceptor.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/internal/services/user.go\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/internal/services/user.go\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/backend/proto/api/user/v1/user.proto\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/backend/proto/api/user/v1/user.proto\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Dockerfile\" />\n        <option value=\"package.json\" />\n        <option value=\"HTML File\" />\n        <option value=\"Go File\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"GOROOT\" url=\"file:///opt/homebrew/opt/go/libexec\" />\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\n      <map>\n        <entry key=\"$PROJECT_DIR$\" value=\"main\" />\n      </map>\n    </option>\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitHubPullRequestSearchHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPEN&quot;,\n    &quot;assignee&quot;: &quot;RyseUp&quot;\n  }\n}</component>\n  <component name=\"GithubPullRequestsUISettings\">{\n  &quot;selectedUrlAndAccountId&quot;: {\n    &quot;url&quot;: &quot;https://github.com/RyseUp/uniqora-nft-marketplace.git&quot;,\n    &quot;accountId&quot;: &quot;7c175e60-c9a3-417d-90f5-410b5e375e1f&quot;\n  }\n}</component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 1\n}</component>\n  <component name=\"ProjectId\" id=\"2vUdkO0xZQdzGt405Mx2vaIcHFq\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"DefaultGoTemplateProperty\": \"Go File\",\n    \"DefaultHtmlFileTemplate\": \"HTML File\",\n    \"Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd.executor\": \"Run\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"RunOnceActivity.git.unshallow\": \"true\",\n    \"RunOnceActivity.go.formatter.settings.were.checked\": \"true\",\n    \"RunOnceActivity.go.migrated.go.modules.settings\": \"true\",\n    \"RunOnceActivity.go.modules.go.list.on.any.changes.was.set\": \"true\",\n    \"git-widget-placeholder\": \"feat/prevent-replay-attacks-in-login-with-metamask\",\n    \"go.import.settings.migrated\": \"true\",\n    \"go.sdk.automatically.set\": \"true\",\n    \"last_opened_file_path\": \"/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace/backend\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"settings.editor.selected.configurable\": \"reference.settingsdialog.IDE.editor.colors\"\n  },\n  \"keyToStringList\": {\n    \"DatabaseDriversLRU\": [\n      \"postgresql\"\n    ]\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/backend\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"$PROJECT_DIR$/backend/internal/email_center/template\" />\n      <recent name=\"$PROJECT_DIR$/backend/internal/EmailType\" />\n      <recent name=\"$PROJECT_DIR$/frontend\" />\n      <recent name=\"$PROJECT_DIR$/backend\" />\n    </key>\n  </component>\n  <component name=\"RunManager\">\n    <configuration name=\"go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd\" type=\"GoApplicationRunConfiguration\" factoryName=\"Go Application\" temporary=\"true\" nameIsGenerated=\"true\">\n      <module name=\"uniqora-nft-marketplace\" />\n      <working_directory value=\"$PROJECT_DIR$/backend\" />\n      <kind value=\"PACKAGE\" />\n      <package value=\"github.com/RyseUp/uniqora-nft-marketplace/backend/cmd\" />\n      <directory value=\"$PROJECT_DIR$\" />\n      <filePath value=\"$PROJECT_DIR$/backend/cmd/main.go\" />\n      <method v=\"2\" />\n    </configuration>\n    <recent_temporary>\n      <list>\n        <item itemvalue=\"Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd\" />\n        <item itemvalue=\"Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd\" />\n        <item itemvalue=\"Go Build.go build github.com/RyseUp/uniqora-nft-marketplace/backend/cmd\" />\n      </list>\n    </recent_temporary>\n  </component>\n  <component name=\"SharedIndexes\">\n    <attachedChunks>\n      <set>\n        <option value=\"bundled-gosdk-d297c17c1fbd-57c114c3cede-org.jetbrains.plugins.go.sharedIndexes.bundled-GO-243.24978.59\" />\n        <option value=\"bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-GO-243.24978.59\" />\n      </set>\n    </attachedChunks>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"set up code folder structure\" />\n    <MESSAGE value=\"user-resend-sign-up\" />\n    <MESSAGE value=\"user-update-and-get-their-profile\" />\n    <MESSAGE value=\"set-up-config-go-oauth\" />\n    <MESSAGE value=\"Merge pull request #8 from RyseUp/feat/user-login-via-google-account&#10;&#10;Feat/user login via google account\" />\n    <MESSAGE value=\"update env\" />\n    <MESSAGE value=\"update gitignore\" />\n    <MESSAGE value=\"update code folder structure\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"update code folder structure\" />\n  </component>\n  <component name=\"VgoProject\">\n    <settings-migrated>true</settings-migrated>\n  </component>\n  <component name=\"XDebuggerManager\">\n    <breakpoint-manager>\n      <breakpoints>\n        <line-breakpoint enabled=\"true\" type=\"DlvLineBreakpoint\">\n          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>\n          <line>594</line>\n          <option name=\"timeStamp\" value=\"12\" />\n        </line-breakpoint>\n      </breakpoints>\n    </breakpoint-manager>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision bdd2656eecf650b85a5a9d79fca88ee72b1a91f7)
++++ b/.idea/workspace.xml	(date 1745397120099)
+@@ -4,18 +4,7 @@
+     <option name="autoReloadType" value="ALL" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="update code folder structure">
+-      <change afterPath="$PROJECT_DIR$/backend/internal/repositories/wallet_nonce.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user.pb.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/user_grpc.pb.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/api/user/v1/v1connect/user.connect.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/cmd/main.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/internal/models/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/models/user.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/security/auth_interceptor.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/internal/services/user.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/internal/services/user.go" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/backend/proto/api/user/v1/user.proto" afterDir="false" />
+-    </list>
++    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="user create metamask nonce to prevent replay attacks in login with metamask" />
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -52,6 +41,9 @@
+     &quot;accountId&quot;: &quot;7c175e60-c9a3-417d-90f5-410b5e375e1f&quot;
+   }
+ }</component>
++  <component name="ProblemsViewState">
++    <option name="selectedTabId" value="CurrentFile" />
++  </component>
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 1
+ }</component>
+@@ -135,20 +127,10 @@
+     <MESSAGE value="update env" />
+     <MESSAGE value="update gitignore" />
+     <MESSAGE value="update code folder structure" />
+-    <option name="LAST_COMMIT_MESSAGE" value="update code folder structure" />
++    <MESSAGE value="user create metamask nonce to prevent replay attacks in login with metamask" />
++    <option name="LAST_COMMIT_MESSAGE" value="user create metamask nonce to prevent replay attacks in login with metamask" />
+   </component>
+   <component name="VgoProject">
+     <settings-migrated>true</settings-migrated>
+   </component>
+-  <component name="XDebuggerManager">
+-    <breakpoint-manager>
+-      <breakpoints>
+-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+-          <url>file://$PROJECT_DIR$/backend/internal/services/user.go</url>
+-          <line>594</line>
+-          <option name="timeStamp" value="12" />
+-        </line-breakpoint>
+-      </breakpoints>
+-    </breakpoint-manager>
+-  </component>
+ </project>
+\ No newline at end of file
