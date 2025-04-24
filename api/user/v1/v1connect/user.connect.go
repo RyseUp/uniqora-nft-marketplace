@@ -7,7 +7,7 @@ package v1connect
 import (
 	context "context"
 	errors "errors"
-	v1 "github.com/RyseUp/uniqora-nft-marketplace/backend/api/user/v1"
+	v1 "github.com/RyseUp/uniqora-nft-marketplace/api/user/v1"
 	connect_go "github.com/bufbuild/connect-go"
 	http "net/http"
 	strings "strings"
