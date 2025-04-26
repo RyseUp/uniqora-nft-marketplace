@@ -13,7 +13,7 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY .env .env
+#COPY .env .env
 
 COPY --from=builder /app/server .
 
