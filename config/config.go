@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/viper"
 	"log"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -80,6 +81,10 @@ func Load() *Config {
 
 	if envRedirectURL := os.Getenv("GOOGLE_REDIRECT_URL"); envRedirectURL != "" {
 		cfg.Google.RedirectURL = envRedirectURL
+	}
+
+	if envScopes := os.Getenv("GOOGLE_SCOPES"); envScopes != "" {
+		cfg.Google.Scopes = strings.Split(envScopes, ",")
 	}
 
 	return &cfg
