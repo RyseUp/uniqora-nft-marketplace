@@ -37,8 +37,10 @@ type GoogleConfig struct {
 }
 
 func Load() *Config {
-	if err := godotenv.Load(); err != nil {
-		log.Println("No local .env file found, skipping (expected in production)")
+	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		if err := godotenv.Load(); err != nil {
+			log.Println("No local .env file found, skipping (expected in production)")
+		}
 	}
 
 	viper.SetConfigName("config")
