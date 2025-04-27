@@ -28,7 +28,7 @@ func NewGoogleOAuthConfig(cfg *config.GoogleConfig) (*oauth2.Config, error) {
 		ClientID:     cfg.ClientID,
 		ClientSecret: cfg.ClientSecret,
 		Endpoint:     google.Endpoint,
-		RedirectURL:  "https://developers.google.com/oauthplayground",
+		RedirectURL:  cfg.RedirectURL,
 		Scopes:       cfg.Scopes,
 	}, nil
 }

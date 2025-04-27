@@ -34,18 +34,19 @@ type GoogleConfig struct {
 	ClientID     string   `mapstructure:"client_id"`
 	ClientSecret string   `mapstructure:"client_secret"`
 	Scopes       []string `mapstructure:"scopes"`
+	RedirectURL  string   `mapstructure:"redirect_url"`
 }
 
 func Load() *Config {
 	if os.Getenv("RAILWAY_ENVIRONMENT") == "" {
+		// Only load .env in local dev
 		if err := godotenv.Load(); err != nil {
-			log.Println("No local .env file found, skipping (expected in production)")
+			log.Fatal("Failed to load .env file")
 		}
 	}
 
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
-
 	viper.AddConfigPath("./config")
 	viper.AddConfigPath(".")
 
@@ -55,13 +56,12 @@ func Load() *Config {
 		}
 	}
 
-	viper.AutomaticEnv()
-
 	var cfg Config
 	if err := viper.Unmarshal(&cfg); err != nil {
 		log.Fatalf("config unmarshal: %v", err)
 	}
 
+	// Chỉ override bằng ENV cho các field đặc biệt
 	if envPwd := os.Getenv("EMAIL_PASSWORD"); envPwd != "" {
 		cfg.Email.Password = envPwd
 	}
@@ -77,5 +77,10 @@ func Load() *Config {
 	if envClientSecret := os.Getenv("GOOGLE_CLIENT_SECRET"); envClientSecret != "" {
 		cfg.Google.ClientSecret = envClientSecret
 	}
+
+	if envRedirectURL := os.Getenv("GOOGLE_REDIRECT_URL"); envRedirectURL != "" {
+		cfg.Google.RedirectURL = envRedirectURL
+	}
+
 	return &cfg
 }
