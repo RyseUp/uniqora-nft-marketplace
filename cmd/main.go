@@ -39,6 +39,9 @@ func main() {
 	defer logger.Sync()
 
 	// google-auth-config
+	log.Println("GOOGLE_CLIENT_ID from config:", cfg.Google.ClientID)
+	log.Println("GOOGLE_CLIENT_SECRET from config:", cfg.Google.ClientSecret)
+
 	googleConfig, err := auth.NewGoogleOAuthConfig(&cfg.Google)
 	if err != nil {
 		logger.Fatal("failed to initialize Google OAuth2 config", zap.Error(err))
