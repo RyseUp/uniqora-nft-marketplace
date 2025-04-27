@@ -37,9 +37,8 @@ type GoogleConfig struct {
 }
 
 func Load() *Config {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Failed to load .env file")
+	if err := godotenv.Load(); err != nil {
+		log.Println("No local .env file found, skipping (expected in production)")
 	}
 
 	viper.SetConfigName("config")
