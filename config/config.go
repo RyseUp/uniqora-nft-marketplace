@@ -62,7 +62,6 @@ func Load() *Config {
 		log.Fatalf("config unmarshal: %v", err)
 	}
 
-	// Chỉ override bằng ENV cho các field đặc biệt
 	if envPwd := os.Getenv("EMAIL_PASSWORD"); envPwd != "" {
 		cfg.Email.Password = envPwd
 	}
@@ -85,6 +84,10 @@ func Load() *Config {
 
 	if envScopes := os.Getenv("GOOGLE_SCOPES"); envScopes != "" {
 		cfg.Google.Scopes = strings.Split(envScopes, ",")
+	}
+
+	if envRabbitURL := os.Getenv("RABBITMQ_URL"); envRabbitURL != "" {
+		cfg.RabbitMQ.URL = envRabbitURL
 	}
 
 	return &cfg

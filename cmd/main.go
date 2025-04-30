@@ -63,6 +63,7 @@ func main() {
 	)
 
 	// user-service-setting
+	log.Println("RabbitMQ URL from config:", cfg.RabbitMQ.URL)
 	publisher, err := mq.NewPublisher(cfg.RabbitMQ.URL, cfg.RabbitMQ.EmailQueue)
 	if err != nil {
 		log.Fatalf("rabbitmq: %v", err)
