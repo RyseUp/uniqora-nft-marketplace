@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="fix: load RabbitMQ URL from environment instead of config.yaml">
-      <change beforePath="$PROJECT_DIR$/internal/worker/email_consumer.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/worker/email_consumer.go" afterDir="false" />
+    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="fix(worker): ensure queue is declared on consumer channel to avoid 404 NOT_FOUND">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -143,7 +143,8 @@
     <MESSAGE value="fix: log to check config" />
     <MESSAGE value="add: add log to check rabbit mq" />
     <MESSAGE value="fix: load RabbitMQ URL from environment instead of config.yaml" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: load RabbitMQ URL from environment instead of config.yaml" />
+    <MESSAGE value="fix(worker): ensure queue is declared on consumer channel to avoid 404 NOT_FOUND" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(worker): ensure queue is declared on consumer channel to avoid 404 NOT_FOUND" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
