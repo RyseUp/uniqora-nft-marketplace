@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="fix: log to check config">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="fix: load RabbitMQ URL from environment instead of config.yaml">
+      <change beforePath="$PROJECT_DIR$/internal/worker/email_consumer.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/worker/email_consumer.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +65,7 @@
     "git-widget-placeholder": "main",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace",
+    "last_opened_file_path": "/Users/minhnh/Documents/nft-marketplace/uniqora-nft-marketplace",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
@@ -141,7 +141,9 @@
     <MESSAGE value="user create metamask nonce to prevent replay attacks in login with metamask" />
     <MESSAGE value="fix: support production env loading" />
     <MESSAGE value="fix: log to check config" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix: log to check config" />
+    <MESSAGE value="add: add log to check rabbit mq" />
+    <MESSAGE value="fix: load RabbitMQ URL from environment instead of config.yaml" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: load RabbitMQ URL from environment instead of config.yaml" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
