@@ -20,13 +20,13 @@ func NewPublisher(url, queue string) (*Publisher, error) {
 	}
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Println("failed to connect channel")
+		log.Fatal("failed to connect channel")
 		return nil, err
 	}
 	// durable queue, server‑named exchange (default)
 	_, err = ch.QueueDeclare(queue, true, false, false, false, nil)
 	if err != nil {
-		log.Println("failed to declare queue")
+		log.Fatal("failed to declare queue")
 		return nil, err
 	}
 	return &Publisher{ch: ch, queue: queue}, nil
