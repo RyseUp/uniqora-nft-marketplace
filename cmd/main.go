@@ -49,6 +49,9 @@ func main() {
 
 	// http-router-service
 	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Uniqora backend is live"))
+	})
 
 	// setting-interceptor
 	interceptor := connect.WithInterceptors(
