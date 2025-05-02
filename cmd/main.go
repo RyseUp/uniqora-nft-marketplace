@@ -1,63 +1,23 @@
 package main
 
 import (
-	"context"
 	user "github.com/RyseUp/uniqora-nft-marketplace/api/user/v1/v1connect"
-	"github.com/RyseUp/uniqora-nft-marketplace/auth"
 	"github.com/RyseUp/uniqora-nft-marketplace/config"
-	"github.com/RyseUp/uniqora-nft-marketplace/internal/models"
-	"github.com/RyseUp/uniqora-nft-marketplace/internal/mq"
 	"github.com/RyseUp/uniqora-nft-marketplace/internal/repositories"
 	"github.com/RyseUp/uniqora-nft-marketplace/internal/security"
 	"github.com/RyseUp/uniqora-nft-marketplace/internal/services"
 	"github.com/RyseUp/uniqora-nft-marketplace/internal/worker"
 	"github.com/bufbuild/connect-go"
 	"go.uber.org/zap"
-	"log"
 	"net/http"
 )
 
 func main() {
 	cfg := config.Load()
-
-	db, err := config.ConnectDatabase(cfg,
-		&models.User{},
-		&models.UserRegister{},
-		&models.UserSession{},
-		&models.WalletNonce{},
-	)
-
-	if err != nil {
-		log.Fatalf("db: %v", err)
-	}
-
-	// set-up-log-errors-clearly
-	logger, err := zap.NewProduction()
-	if err != nil {
-		log.Fatalf("logger: %v", err)
-	}
-	defer logger.Sync()
-
-	// google-auth-config
-	log.Println("GOOGLE_CLIENT_ID from config:", cfg.Google.ClientID)
-	log.Println("GOOGLE_CLIENT_SECRET from config:", cfg.Google.ClientSecret)
-
-	googleConfig, err := auth.NewGoogleOAuthConfig(&cfg.Google)
-	if err != nil {
-		logger.Fatal("failed to initialize Google OAuth2 config", zap.Error(err))
-	}
-
-	// http-router-service
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Uniqora backend is live"))
-	})
-
-	// setting-interceptor
-	interceptor := connect.WithInterceptors(
-		security.AuthInterceptor(cfg.JWT.SecretKey),
-		security.SetAccessTokenCookieInterceptor(),
-	)
+	logger := initLogger()
+	db := initDatabase(cfg)
+	googleConfig := initGoogleOAuth(cfg, logger)
+	emailPublisher := initRabbitMQ(cfg, logger)
 
 	// init repo
 	var (
@@ -65,31 +25,27 @@ func main() {
 		walletNonceRepo = repositories.NewWalletNonce(db)
 	)
 
-	// user-service-setting
-	log.Println("RabbitMQ URL from config:", cfg.RabbitMQ.URL)
-	publisher, err := mq.NewPublisher(cfg.RabbitMQ.URL, cfg.RabbitMQ.EmailQueue)
-	if err != nil {
-		log.Fatalf("rabbitmq: %v", err)
-	}
-	emailPublisher := mq.NewEmailPublisher(publisher, cfg.RabbitMQ.EmailQueue)
+	// setting-interceptor
+	interceptor := connect.WithInterceptors(
+		security.AuthInterceptor(cfg.JWT.SecretKey),
+		security.SetAccessTokenCookieInterceptor(),
+	)
 
 	userService := services.NewUserAPI(cfg, userRepo, walletNonceRepo, emailPublisher, googleConfig, logger)
-
-	// authentication-user-service
 	userPath, userHandler := user.NewUserAccountAPIHandler(userService, interceptor)
+
+	// Setup HTTP router
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("Uniqora backend is live"))
+	})
 	mux.Handle(userPath, userHandler)
 
 	// email-consumer-worker
-	go func() {
-		consumer, err := worker.NewEmailConsumer(cfg)
-		if err != nil {
-			log.Fatalf("worker init: %v", err)
-		}
-		if err := consumer.Start(context.Background()); err != nil {
-			log.Fatalf("worker run: %v", err)
-		}
-	}()
+	go worker.StartEmailWorker(cfg, logger)
 
-	log.Println("Server running on :8080")
-	http.ListenAndServe("0.0.0.0:8080", mux)
+	logger.Info("Server running on :8080")
+	if err := http.ListenAndServe("0.0.0.0:8080", mux); err != nil {
+		logger.Fatal("Server failed", zap.Error(err))
+	}
 }
