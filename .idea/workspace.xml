@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="update Dockerfile">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="Add log to check sending email_consumer.go, service.go" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -166,7 +164,8 @@
     <MESSAGE value="fix(worker): ensure queue is declared on consumer channel to avoid 404 NOT_FOUND" />
     <MESSAGE value="fix: add health check route for Railway with '/' endpoint" />
     <MESSAGE value="update Dockerfile" />
-    <option name="LAST_COMMIT_MESSAGE" value="update Dockerfile" />
+    <MESSAGE value="Add log to check sending email_consumer.go, service.go" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add log to check sending email_consumer.go, service.go" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>

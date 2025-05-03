@@ -44,8 +44,6 @@ func (c *EmailConsumer) Start(ctx context.Context) error {
 		return fmt.Errorf("failed to open a channel: %w", err)
 	}
 
-	log.Println("email_queue", c.cfg.RabbitMQ.EmailQueue)
-
 	_, err = ch.QueueDeclare(c.cfg.RabbitMQ.EmailQueue, true, false, false, false, nil)
 	if err != nil {
 		return fmt.Errorf("failed to declare queue: %w", err)
@@ -74,6 +72,13 @@ func (c *EmailConsumer) Start(ctx context.Context) error {
 				log.Printf("worker: bad payload: %v", err)
 				continue
 			}
+			log.Println("email_queue: ", c.cfg.RabbitMQ.EmailQueue)
+			log.Println("host: ", c.cfg.Email.Host)
+			log.Println("password: ", c.cfg.Email.Password)
+			log.Println("from: ", c.cfg.Email.From)
+			log.Println("to: ", msg.Email)
+			log.Println("type: ", msg.Type)
+			log.Println("subject: ", msg.Data)
 			if err := c.emailService.Send(msg); err != nil {
 				log.Printf("worker: email_center processing error: %v", err)
 			}

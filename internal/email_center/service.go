@@ -42,13 +42,6 @@ func (s *EmailService) Send(msg Message) error {
 		subject = s.templateManager.GetDefaultSubject(msg.Type)
 	}
 
-	log.Println("host: ", s.cfg.Email.Host)
-	log.Println("password: ", s.cfg.Email.Password)
-	log.Println("from: ", s.cfg.Email.From)
-	log.Println("to: ", msg.Email)
-	log.Println("type: ", msg.Type)
-	log.Println("subject: ", msg.Data)
-
 	return s.sendMail(msg.Email, subject, body)
 }
 
