@@ -44,11 +44,6 @@ func (c *EmailConsumer) Start(ctx context.Context) error {
 		return fmt.Errorf("failed to open a channel: %w", err)
 	}
 
-	log.Println("email_queue: ", c.cfg.RabbitMQ.EmailQueue)
-	log.Println("host: ", c.cfg.Email.Host)
-	log.Println("port: ", c.cfg.Email.Port)
-	log.Println("from: ", c.cfg.Email.From)
-
 	_, err = ch.QueueDeclare(c.cfg.RabbitMQ.EmailQueue, true, false, false, false, nil)
 	if err != nil {
 		return fmt.Errorf("failed to declare queue: %w", err)
