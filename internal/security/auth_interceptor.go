@@ -23,6 +23,9 @@ func AuthInterceptor(secretKey string) connect.UnaryInterceptorFunc {
 	publicEndpoints := map[string]bool{
 		v1.UserAccountAPI_UserLogin_FullMethodName:            true,
 		v1.UserAccountAPI_UserSignup_FullMethodName:           true,
+		v1.UserAccountAPI_UserResendSignup_FullMethodName:     true,
+		v1.UserAccountAPI_UserRefreshToken_FullMethodName:     true,
+		v1.UserAccountAPI_UserCompleteSignup_FullMethodName:   true,
 		v1.UserAccountAPI_UserGoogleAuth_FullMethodName:       true,
 		v1.UserAccountAPI_ExchangeGoogleCode_FullMethodName:   true,
 		v1.UserAccountAPI_UserMetaMaskAuth_FullMethodName:     true,

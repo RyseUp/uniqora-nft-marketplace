@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="Add log to check sending email_consumer.go, service.go">
+    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="checking success, remove logging">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/worker/email_consumer.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/worker/email_consumer.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/security/auth_interceptor.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/security/auth_interceptor.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -168,7 +168,8 @@
     <MESSAGE value="fix: add health check route for Railway with '/' endpoint" />
     <MESSAGE value="update Dockerfile" />
     <MESSAGE value="Add log to check sending email_consumer.go, service.go" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add log to check sending email_consumer.go, service.go" />
+    <MESSAGE value="checking success, remove logging" />
+    <option name="LAST_COMMIT_MESSAGE" value="checking success, remove logging" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
