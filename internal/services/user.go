@@ -24,7 +24,6 @@ import (
 	"golang.org/x/oauth2"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
-	"log"
 	"net/http"
 	"time"
 )
@@ -582,8 +581,6 @@ func (s *UserAPI) UserMetaMaskAuth(ctx context.Context, c *connect.Request[v1.Us
 	case err != nil:
 		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("failed to get nonce: %w", err))
 	}
-
-	log.Printf("nonce record wallet address: %w", nonceRecord.WalletAddress)
 
 	switch {
 	case nonceRecord.Used:

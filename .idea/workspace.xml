@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="add user complete sign up, user resend email, user refresh token in to middle ware.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="fa11b781-837b-4568-8a1f-916d18362291" name="Changes" comment="add log to check wallet address in nonce record" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -169,7 +167,8 @@
     <MESSAGE value="Add log to check sending email_consumer.go, service.go" />
     <MESSAGE value="checking success, remove logging" />
     <MESSAGE value="add user complete sign up, user resend email, user refresh token in to middle ware." />
-    <option name="LAST_COMMIT_MESSAGE" value="add user complete sign up, user resend email, user refresh token in to middle ware." />
+    <MESSAGE value="add log to check wallet address in nonce record" />
+    <option name="LAST_COMMIT_MESSAGE" value="add log to check wallet address in nonce record" />
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
